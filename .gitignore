@@ -396,3 +396,45 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# CryApp git ignores
+Blossom.sln
+
+Blossom/Blossom.vcxproj
+Blossom/Blossom.vcxproj.filters
+Blossom/Blossom.vcxproj.user
+
+Sandbox/Sandbox.vcxproj
+Sandbox/Sandbox.vcxproj.filters
+Sandbox/Sandbox.vcxproj.user
+
+# Dependencies
+vendor/GLEW/GLEW.vcxproj
+vendor/GLEW/GLEW.vcxproj.filters
+vendor/GLEW/GLEW.vcxproj.user
+
+vendor/GLFW/GLFW.vcxproj
+vendor/GLFW/GLFW.vcxproj.filters
+vendor/GLFW/GLFW.vcxproj.user
+
+vendor/spdlog/spdlog.vcxproj
+vendor/spdlog/spdlog.vcxproj.filters
+vendor/spdlog/spdlog.vcxproj.user
+
+vendor/ImGui/ImGui.vcxproj
+vendor/ImGui/ImGui.vcxproj.filters
+vendor/ImGui/ImGui.vcxproj.user
+
+vendor/assimp/assimp.vcxproj
+vendor/assimp/assimp.vcxproj.filters
+vendor/assimp/assimp.vcxproj.user
+
+vendor/VulkanMemoryAllocator/VMA.vcxproj
+vendor/VulkanMemoryAllocator/VMA.vcxproj.filters
+vendor/VulkanMemoryAllocator/VMA.vcxproj.user
+
+# Binaries
+bin/
+bin/**
+bin-int/
+bin-int/**
