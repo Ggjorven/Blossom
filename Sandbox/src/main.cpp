@@ -1,6 +1,8 @@
 #include <Blossom/Core/Application.hpp>
 #include <Blossom/Entrypoint.hpp>
 
+#include "CustomLayer.hpp"
+
 // Create your own application class
 class Sandbox : public Blossom::Application
 {
@@ -9,6 +11,7 @@ public:
 		: Blossom::Application(appInfo)
 	{
 		// Add your own custom layers/overlays
+		AddLayer(new CustomLayer());
 	}
 };
 

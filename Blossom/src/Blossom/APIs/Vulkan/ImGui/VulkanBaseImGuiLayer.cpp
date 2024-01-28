@@ -85,6 +85,8 @@ namespace Blossom
 
 	void BaseImGuiLayer::OnDetach()
 	{
+		vkDeviceWaitIdle(InstanceManager::Get()->GetLogicalDevice());
+
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
