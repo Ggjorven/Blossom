@@ -46,9 +46,7 @@ project "Blossom"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE",
-		"GLEW_STATIC",
-		"BL_EXPOSE_VULKAN" -- This specifies which API to use another is "BL_EXPOSE_OPENGL"
+		"GLEW_STATIC"
 	}
 
 	includedirs
@@ -94,34 +92,97 @@ project "Blossom"
 			"BL_PLATFORM_WINDOWS"
 		}
 
-	filter "configurations:Debug"
-		defines "BL_DEBUG"
+	filter "configurations:Vulkan-Debug"
+		defines 
+		{
+			"BL_DEBUG",
+			"GLFW_INCLUDE_VULKAN",
+			"BL_EXPOSE_VULKAN"
+		}
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:Release"
-		defines "BL_RELEASE"
+	filter "configurations:OpenGL-Debug"
+		defines 
+		{
+			"BL_DEBUG",
+			"GLFW_INCLUDE_NONE",
+			"BL_EXPOSE_OPENGL"
+		}
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Vulkan-Release"
+		defines 
+		{
+			"BL_RELEASE",
+			"GLFW_INCLUDE_VULKAN",
+			"BL_EXPOSE_VULKAN"
+		}
 		runtime "Release"
 		optimize "on"
 
-	filter "configurations:Dist"
-		defines "BL_DIST"
+	filter "configurations:OpenGL-Release"
+		defines 
+		{
+			"BL_RELEASE",
+			"GLFW_INCLUDE_NONE",
+			"BL_EXPOSE_OPENGL"
+		}
 		runtime "Release"
 		optimize "on"
 
-	filter { "system:windows", "configurations:Debug" }
+	filter "configurations:Vulkan-Dist"
+		defines 
+		{
+			"BL_DIST",
+			"GLFW_INCLUDE_VULKAN",
+			"BL_EXPOSE_VULKAN"
+		}
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:OpenGL-Dist"
+		defines 
+		{
+			"BL_DIST",
+			"GLFW_INCLUDE_NONE",
+			"BL_EXPOSE_OPENGL"
+		}
+		runtime "Release"
+		optimize "on"
+
+	filter { "system:windows", "configurations:Vulkan-Debug" }
 		links
 		{
 			"%{wks.location}/vendor/assimp/bin/windows/Debug/assimp-vc143-mtd.lib"
 		}
 
-	filter { "system:windows", "configurations:Release" }
+	filter { "system:windows", "configurations:OpenGL-Debug" }
+		links
+		{
+			"%{wks.location}/vendor/assimp/bin/windows/Debug/assimp-vc143-mtd.lib"
+		}
+
+	filter { "system:windows", "configurations:Vulkan-Release" }
 		links
 		{
 			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"
 		}
 
-	filter { "system:windows", "configurations:Dist" }
+	filter { "system:windows", "configurations:OpenGL-Release" }
+		links
+		{
+			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"
+		}
+
+	filter { "system:windows", "configurations:Vulkan-Dist" }
+		links
+		{
+			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"
+		}
+
+	filter { "system:windows", "configurations:OpenGL-Dist" }
 		links
 		{
 			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"

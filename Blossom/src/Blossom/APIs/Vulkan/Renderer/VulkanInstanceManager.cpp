@@ -1,6 +1,8 @@
 #include "blpch.h"
 #include "VulkanInstanceManager.hpp"
 
+#include <vulkan/vulkan.h>
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -91,7 +93,7 @@ namespace Blossom
 
 		vkDestroyDevice(m_Device, nullptr);
 
-		#if Blossom_VALIDATION_LAYERS
+		#if BL_VALIDATION_LAYERS
 		DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
 		#endif
 
@@ -136,7 +138,7 @@ namespace Blossom
 
 		// Note(Jorben): Setup the debug messenger also for the create instance 
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = {};
-		#if Blossom_VALIDATION_LAYERS
+		#if BL_VALIDATION_LAYERS
 		createInfo.enabledLayerCount = static_cast<uint32_t>(s_RequestedValidationLayers.size());
 		createInfo.ppEnabledLayerNames = s_RequestedValidationLayers.data();
 
@@ -154,7 +156,7 @@ namespace Blossom
 
 	void InstanceManager::CreateDebugger()
 	{
-		#if !(Blossom_VALIDATION_LAYERS)
+		#if !(BL_VALIDATION_LAYERS)
 		return;
 		#else
 		VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
@@ -227,7 +229,7 @@ namespace Blossom
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(s_RequestedDeviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = s_RequestedDeviceExtensions.data();
 
-		#if Blossom_VALIDATION_LAYERS
+		#if BL_VALIDATION_LAYERS
 		createInfo.enabledLayerCount = static_cast<uint32_t>(s_RequestedValidationLayers.size());
 		createInfo.ppEnabledLayerNames = s_RequestedValidationLayers.data();
 		#else
@@ -282,7 +284,7 @@ namespace Blossom
 
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		#if Blossom_VALIDATION_LAYERS
+		#if BL_VALIDATION_LAYERS
 		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		#endif
 

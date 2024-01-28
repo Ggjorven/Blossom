@@ -55,39 +55,109 @@ project "Sandbox"
 		defines
 		{
 			"GL_PLATFORM_WINDOWS",
-			"GLFW_INCLUDE_NONE",
-			"BL_EXPOSE_VULKAN" -- This specifies which API to use another is "BL_EXPOSE_OPENGL"
+			"GLFW_INCLUDE_NONE"
 		}
 
-	filter "configurations:Debug"
-		defines "GL_DEBUG"
+	filter "configurations:Vulkan-Debug"
+		defines 
+		{
+			"BL_DEBUG",
+			"BL_EXPOSE_VULKAN"
+		}
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:Release"
-		defines "GL_RELEASE"
+	filter "configurations:OpenGL-Debug"
+		defines 
+		{
+			"BL_DEBUG",
+			"BL_EXPOSE_OPENGL"
+		}
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Vulkan-Release"
+		defines 
+		{
+			"BL_RELEASE",
+			"BL_EXPOSE_VULKAN"
+		}
 		runtime "Release"
 		optimize "on"
 
-	filter "configurations:Dist"
-		defines "GL_DIST"
+	filter "configurations:OpenGL-Release"
+		defines 
+		{
+			"BL_RELEASE",
+			"BL_EXPOSE_OPENGL"
+		}
 		runtime "Release"
 		optimize "on"
 
-	filter { "system:windows", "configurations:Debug" }
+	filter "configurations:Vulkan-Dist"
+		defines 
+		{
+			"BL_DIST",
+			"BL_EXPOSE_VULKAN"
+		}
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:OpenGL-Dist"
+		defines 
+		{
+			"BL_DIST",
+			"BL_EXPOSE_OPENGL"
+		}
+		runtime "Release"
+		optimize "on"
+
+	filter { "system:windows", "configurations:Vulkan-Debug" }
 		postbuildcommands
 		{
 			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Debug/assimp-vc143-mtd.dll" "%{cfg.targetdir}"',
 		}
 
-	filter { "system:windows", "configurations:Release" }
+	filter { "system:windows", "configurations:OpenGL-Debug" }
+		postbuildcommands
+		{
+			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Debug/assimp-vc143-mtd.dll" "%{cfg.targetdir}"',
+		}
+
+	filter { "system:windows", "configurations:Vulkan-Release" }
+		postbuildcommands
+		{
+			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"',
+		}
+
+	filter { "system:windows", "configurations:OpenGL-Release" }
+		postbuildcommands
+		{
+			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"',
+		}
+
+	filter { "system:windows", "configurations:Vulkan-Dist" }
+		postbuildcommands
+		{
+			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"',
+		}
+
+	filter { "system:windows", "configurations:OpenGL-Dist" }
 		postbuildcommands
 		{
 			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"',
 		}
 
 	-- Dist filter for Windows for Windowed Applications
-	filter { "system:windows", "configurations:Dist" }
+	filter { "system:windows", "configurations:Vulkan-Dist" }
+		kind "WindowedApp"
+
+		postbuildcommands
+		{
+			'{COPYFILE} "%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"',
+		}
+
+	filter { "system:windows", "configurations:OpenGL-Dist" }
 		kind "WindowedApp"
 
 		postbuildcommands

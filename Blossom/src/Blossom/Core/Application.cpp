@@ -5,7 +5,7 @@
 
 #include "Blossom/Core/Logging.hpp"
 
-#include "Blossom/APIs/Vulkan/Renderer/VulkanRenderer.hpp"
+#include "Blossom/Renderer/Renderer.hpp"
 
 namespace Blossom
 {

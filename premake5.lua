@@ -6,9 +6,12 @@ workspace "Blossom"
 
 	configurations
 	{
-		"Debug",
-		"Release",
-		"Dist"
+		"Vulkan-Debug",
+		"Vulkan-Release",
+		"Vulkan-Dist",
+		"OpenGL-Debug",
+		"OpenGL-Release",
+		"OpenGL-Dist"
 	}
 
 	flags

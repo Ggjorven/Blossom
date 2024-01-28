@@ -33,10 +33,26 @@ project "ImGui"
 		cppdialect "C++20"
 		staticruntime "On"
 
-	filter "configurations:Debug"
+	filter "configurations:Vulkan-Debug"
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:Release"
+	filter "configurations:OpenGL-Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Vulkan-Release"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:OpenGL-Release"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Vulkan-Dist"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:OpenGL-Dist"
 		runtime "Release"
 		optimize "on"
