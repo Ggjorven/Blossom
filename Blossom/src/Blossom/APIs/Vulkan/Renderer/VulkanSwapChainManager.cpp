@@ -1,5 +1,5 @@
 #include "blpch.h"
-#include "SwapChainManager.hpp"
+#include "VulkanSwapChainManager.hpp"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -8,8 +8,8 @@
 
 #include "Blossom/Core/Application.hpp"
 
-#include "Blossom/Renderer/InstanceManager.hpp" // For the retrieval of the logical device
-#include "Blossom/Utils/BufferManager.hpp" 
+#include "Blossom/APIs/Vulkan/Renderer/VulkanInstanceManager.hpp" // For the retrieval of the logical device
+#include "Blossom/APIs/Vulkan/Utils/VulkanBufferManager.hpp" 
 
 namespace Blossom
 {
@@ -19,7 +19,7 @@ namespace Blossom
 	// ===================================
 	SwapChainManager* SwapChainManager::s_Instance = nullptr;
 
-	static InstanceManager* s_InstanceManager = nullptr;
+	static InstanceManager* s_InstanceManagerSM = nullptr;
 
 	// ===================================
 	// ------------ Public ---------------
@@ -28,7 +28,7 @@ namespace Blossom
 	{
 		// Retrieve the InstanceManager, so we can use it in our code
 		s_Instance = this;
-		s_InstanceManager = InstanceManager::Get();
+		s_InstanceManagerSM = InstanceManager::Get();
 
 		CreateSwapChain(Application::Get().GetWindow().IsVSync());
 		CreateImageViews();
@@ -41,9 +41,9 @@ namespace Blossom
 	{
 		CleanUpSwapChain();
 		
-		vkDestroyRenderPass(s_InstanceManager->m_Device, m_RenderPass, nullptr);
+		vkDestroyRenderPass(s_InstanceManagerSM->m_Device, m_RenderPass, nullptr);
 
-		s_InstanceManager = nullptr;
+		s_InstanceManagerSM = nullptr;
 		s_Instance = nullptr;
 	}
 
@@ -66,7 +66,7 @@ namespace Blossom
 			glfwWaitEvents();
 		}
 
-		vkDeviceWaitIdle(s_InstanceManager->m_Device);
+		vkDeviceWaitIdle(s_InstanceManagerSM->m_Device);
 
 		CleanUpSwapChain();
 
@@ -81,7 +81,7 @@ namespace Blossom
 	// ===================================
 	void SwapChainManager::CreateSwapChain(bool vsync)
 	{
-		InstanceManager::SwapChainSupportDetails swapChainSupport = s_InstanceManager->QuerySwapChainSupport(s_InstanceManager->m_PhysicalDevice);
+		InstanceManager::SwapChainSupportDetails swapChainSupport = s_InstanceManagerSM->QuerySwapChainSupport(s_InstanceManagerSM->m_PhysicalDevice);
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.Formats);
 		VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.PresentModes, vsync);
@@ -96,7 +96,7 @@ namespace Blossom
 
 		VkSwapchainCreateInfoKHR createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		createInfo.surface = s_InstanceManager->m_Surface;
+		createInfo.surface = s_InstanceManagerSM->m_Surface;
 		createInfo.minImageCount = imageCount;
 		createInfo.imageFormat = surfaceFormat.format;
 		createInfo.imageColorSpace = surfaceFormat.colorSpace;
@@ -104,7 +104,7 @@ namespace Blossom
 		createInfo.imageArrayLayers = 1;
 		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-		InstanceManager::QueueFamilyIndices indices = s_InstanceManager->FindQueueFamilies(s_InstanceManager->m_PhysicalDevice);
+		InstanceManager::QueueFamilyIndices indices = s_InstanceManagerSM->FindQueueFamilies(s_InstanceManagerSM->m_PhysicalDevice);
 		uint32_t queueFamilyIndices[] = { indices.GraphicsFamily.value(), indices.PresentFamily.value() };
 
 		if (indices.GraphicsFamily != indices.PresentFamily)
@@ -128,13 +128,13 @@ namespace Blossom
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
 		// Creation of the swapchain
-		if (vkCreateSwapchainKHR(s_InstanceManager->m_Device, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(s_InstanceManagerSM->m_Device, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
 			BL_LOG_ERROR("Failed to create swap chain!");
 
 		// Note(Jorben): We query the amount of images again, because vulkan is allowed to create a swapchain with more images.
-		vkGetSwapchainImagesKHR(s_InstanceManager->m_Device, m_SwapChain, &imageCount, nullptr);
+		vkGetSwapchainImagesKHR(s_InstanceManagerSM->m_Device, m_SwapChain, &imageCount, nullptr);
 		m_SwapChainImages.resize(imageCount);
-		vkGetSwapchainImagesKHR(s_InstanceManager->m_Device, m_SwapChain, &imageCount, m_SwapChainImages.data());
+		vkGetSwapchainImagesKHR(s_InstanceManagerSM->m_Device, m_SwapChain, &imageCount, m_SwapChainImages.data());
 
 		// Store the format and extent for the future
 		m_SwapChainImageFormat = surfaceFormat.format;
@@ -209,7 +209,7 @@ namespace Blossom
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
-		if (vkCreateRenderPass(s_InstanceManager->m_Device, &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
+		if (vkCreateRenderPass(s_InstanceManagerSM->m_Device, &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
 			BL_LOG_ERROR("Failed to create render pass!");
 	}
 
@@ -241,7 +241,7 @@ namespace Blossom
 			framebufferInfo.height = m_SwapChainExtent.height;
 			framebufferInfo.layers = 1;
 
-			if (vkCreateFramebuffer(s_InstanceManager->m_Device, &framebufferInfo, nullptr, &m_SwapChainFramebuffers[i]) != VK_SUCCESS)
+			if (vkCreateFramebuffer(s_InstanceManagerSM->m_Device, &framebufferInfo, nullptr, &m_SwapChainFramebuffers[i]) != VK_SUCCESS)
 				BL_LOG_ERROR("Failed to create framebuffer!");
 		}
 	}
@@ -315,7 +315,7 @@ namespace Blossom
 		for (VkFormat format : candidates) 
 		{
 			VkFormatProperties props;
-			vkGetPhysicalDeviceFormatProperties(s_InstanceManager->m_PhysicalDevice, format, &props);
+			vkGetPhysicalDeviceFormatProperties(s_InstanceManagerSM->m_PhysicalDevice, format, &props);
 
 			if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
 				return format;
@@ -329,17 +329,17 @@ namespace Blossom
 
 	void SwapChainManager::CleanUpSwapChain()
 	{
-		vkDestroyImageView(s_InstanceManager->m_Device, m_DepthImageView, nullptr);
-		vkDestroyImage(s_InstanceManager->m_Device, m_DepthImage, nullptr);
-		vkFreeMemory(s_InstanceManager->m_Device, m_DepthImageMemory, nullptr);
+		vkDestroyImageView(s_InstanceManagerSM->m_Device, m_DepthImageView, nullptr);
+		vkDestroyImage(s_InstanceManagerSM->m_Device, m_DepthImage, nullptr);
+		vkFreeMemory(s_InstanceManagerSM->m_Device, m_DepthImageMemory, nullptr);
 
 		for (size_t i = 0; i < m_SwapChainFramebuffers.size(); i++)
-			vkDestroyFramebuffer(s_InstanceManager->m_Device, m_SwapChainFramebuffers[i], nullptr);
+			vkDestroyFramebuffer(s_InstanceManagerSM->m_Device, m_SwapChainFramebuffers[i], nullptr);
 
 		for (size_t i = 0; i < m_SwapChainImageViews.size(); i++)
-			vkDestroyImageView(s_InstanceManager->m_Device, m_SwapChainImageViews[i], nullptr);
+			vkDestroyImageView(s_InstanceManagerSM->m_Device, m_SwapChainImageViews[i], nullptr);
 
-		vkDestroySwapchainKHR(s_InstanceManager->m_Device, m_SwapChain, nullptr);
+		vkDestroySwapchainKHR(s_InstanceManagerSM->m_Device, m_SwapChain, nullptr);
 	}
 
 }

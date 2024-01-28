@@ -1,10 +1,10 @@
 #include "blpch.h"
-#include "WindowsWindow.hpp"
+#include "VulkanWindowsWindow.hpp"
 
 #include "Blossom/Core/Events.hpp"
 #include "Blossom/Core/Logging.hpp"
 
-#include "Blossom/Renderer/SwapChainManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanSwapChainManager.hpp"
 
 namespace Blossom
 {

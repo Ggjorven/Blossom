@@ -14,9 +14,31 @@ project "Blossom"
 
 	files
 	{
-		"src/**.h",
-		"src/**.hpp",
-		"src/**.cpp",
+		"src/Blossom/*.h",
+		"src/Blossom/*.hpp",
+		"src/Blossom/*.cpp",
+
+		"src/Blossom/APIs/APIBuild.cpp",
+
+		"src/Blossom/Core/**.h",
+		"src/Blossom/Core/**.hpp",
+		"src/Blossom/Core/**.cpp",
+
+		"src/Blossom/ImGui/**.h",
+		"src/Blossom/ImGui/**.hpp",
+		"src/Blossom/ImGui/**.cpp",
+
+		"src/Blossom/Platforms/**.h",
+		"src/Blossom/Platforms/**.hpp",
+		"src/Blossom/Platforms/**.cpp",
+
+		"src/Blossom/Renderer/**.h",
+		"src/Blossom/Renderer/**.hpp",
+		"src/Blossom/Renderer/**.cpp",
+
+		"src/Blossom/Utils/**.h",
+		"src/Blossom/Utils/**.hpp",
+		"src/Blossom/Utils/**.cpp",
 		
 		"%{wks.location}/vendor/stb_image/src/stb_image.cpp"
 	}
@@ -25,8 +47,8 @@ project "Blossom"
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE",
-		"GLEW_STATIC"
-		-- "ASSIMP_BUILD_STATIC_LIB"
+		"GLEW_STATIC",
+		"BL_EXPOSE_VULKAN" -- This specifies which API to use another is "BL_EXPOSE_OPENGL"
 	}
 
 	includedirs

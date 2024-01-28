@@ -1,10 +1,10 @@
 #include "blpch.h"
-#include "Mesh.hpp"
+#include "VulkanMesh.hpp"
 
 #include "Blossom/Core/Logging.hpp"
 
-#include "Blossom/Renderer/InstanceManager.hpp"
-#include "Blossom/Utils/BufferManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanInstanceManager.hpp"
+#include "Blossom/APIs/Vulkan/Utils/VulkanBufferManager.hpp"
 
 namespace Blossom
 {

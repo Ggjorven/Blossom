@@ -1,5 +1,5 @@
 #include "blpch.h"
-#include "InstanceManager.hpp"
+#include "VulkanInstanceManager.hpp"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

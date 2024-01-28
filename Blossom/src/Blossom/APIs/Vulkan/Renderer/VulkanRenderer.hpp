@@ -6,9 +6,9 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
-#include "Blossom/Renderer/InstanceManager.hpp"
-#include "Blossom/Renderer/SwapChainManager.hpp"
-#include "Blossom/Renderer/GraphicsPipelineManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanInstanceManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanSwapChainManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanGraphicsPipelineManager.hpp"
 
 namespace Blossom
 {

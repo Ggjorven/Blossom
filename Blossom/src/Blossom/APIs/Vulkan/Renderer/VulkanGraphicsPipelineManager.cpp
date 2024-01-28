@@ -1,5 +1,5 @@
 #include "blpch.h"
-#include "GraphicsPipelineManager.hpp"
+#include "VulkanGraphicsPipelineManager.hpp"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -8,9 +8,9 @@
 
 #include "Blossom/Core/Application.hpp"
 
-#include "Blossom/Renderer/Renderer.hpp"
-#include "Blossom/Renderer/InstanceManager.hpp" // For the retrieval of the logical device
-#include "Blossom/Renderer/SwapChainManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanRenderer.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanInstanceManager.hpp" // For the retrieval of the logical device
+#include "Blossom/APIs/Vulkan/Renderer/VulkanSwapChainManager.hpp"
 
 namespace Blossom
 {

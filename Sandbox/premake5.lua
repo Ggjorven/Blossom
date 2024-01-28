@@ -23,6 +23,7 @@ project "Sandbox"
 		"src",
 
 		"%{wks.location}/Blossom/src",
+		"%{wks.location}/Blossom/src/Blossom",
 		"%{wks.location}vendor",
 
 		"%{IncludeDir.GLEW}",
@@ -54,7 +55,8 @@ project "Sandbox"
 		defines
 		{
 			"GL_PLATFORM_WINDOWS",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"BL_EXPOSE_VULKAN" -- This specifies which API to use another is "BL_EXPOSE_OPENGL"
 		}
 
 	filter "configurations:Debug"

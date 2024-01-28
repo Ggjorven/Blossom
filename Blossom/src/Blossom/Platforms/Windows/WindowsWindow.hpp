@@ -1,46 +1,8 @@
 #pragma once
 
-#include "Blossom/Core/Window.hpp"
+#if defined(BL_EXPOSE_VULKAN)
+#include "APIs/Vulkan/Platforms/VulkanWindowsWindow.hpp"
 
-#include <GLFW/glfw3.h>
+#elif defined(BL_EXPOSE_OPENGL)
 
-namespace Blossom
-{
-
-	class WindowsWindow : public Window
-	{
-	public:
-		WindowsWindow(const WindowProperties properties);
-		virtual ~WindowsWindow();
-
-		void SetEventCallBack(EventCallBackFunction func) override { m_Data.CallBack = func; }
-
-		void OnUpdate() override;
-		void OnRender() override;
-
-		uint32_t GetWidth() const override { return m_Data.Width; }
-		uint32_t GetHeight() const override { return m_Data.Height; }
-
-		void SetVSync(bool enabled) override;
-		bool IsVSync() const override { return m_Data.Vsync; }
-
-		void SetTitle(const std::string& title) override;
-
-		void* GetNativeWindow() const override { return (void*)m_Window; }
-
-	private:
-		bool Init(WindowProperties properties);
-		void Shutdown();
-
-		static void ErrorCallBack(int errorCode, const char* description);
-
-	private:
-		static bool s_GLFWinitialized;
-		static uint32_t s_Instances;
-
-		GLFWwindow* m_Window;
-		WindowData m_Data;
-
-	};
-
-}
+#endif

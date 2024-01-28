@@ -1,13 +1,13 @@
 #include "blpch.h"
-#include "BufferManager.hpp"
+#include "VulkanBufferManager.hpp"
 
 #include <stb_image.h>
 
 #include "Blossom/Core/Logging.hpp"
 
-#include "Blossom/Renderer/Renderer.hpp"
-#include "Blossom/Renderer/InstanceManager.hpp"
-#include "Blossom/Renderer/SwapChainManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanRenderer.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanInstanceManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanSwapChainManager.hpp"
 
 namespace Blossom
 {

@@ -1,5 +1,5 @@
 #include "blpch.h"
-#include "BaseImGuiLayer.hpp"
+#include "VulkanBaseImGuiLayer.hpp"
 
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
@@ -10,18 +10,18 @@
 #include <GLFW/glfw3.h>
 
 // For imgui initialization
-#include "Blossom/Renderer/Renderer.hpp"
-#include "Blossom/Renderer/InstanceManager.hpp"
-#include "Blossom/Renderer/SwapChainManager.hpp"
-#include "Blossom/Renderer/GraphicsPipelineManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanRenderer.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanInstanceManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanSwapChainManager.hpp"
+#include "Blossom/APIs/Vulkan/Renderer/VulkanGraphicsPipelineManager.hpp"
 
-#include "Blossom/Utils/BufferManager.hpp"
+#include "Blossom/APIs/Vulkan/Utils/VulkanBufferManager.hpp"
 
 namespace Blossom
 {
 
 	BaseImGuiLayer::BaseImGuiLayer()
-		: Layer("BaseImGuiLayer")
+		: Layer("VulkanBaseImGuiLayer")
 	{
 	}
 

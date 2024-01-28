@@ -1,26 +1,8 @@
 #pragma once
 
-#include "Blossom/Core/Layer.hpp"
+#if defined(BL_EXPOSE_VULKAN)
+#include "APIs/Vulkan/ImGui/VulkanBaseImGuiLayer.hpp"
 
-namespace Blossom
-{
+#elif defined(BL_EXPOSE_OPENGL)
 
-	class InstanceManager;
-
-	class BaseImGuiLayer : public Layer
-	{
-	public:
-		BaseImGuiLayer();
-		virtual ~BaseImGuiLayer() = default;
-
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
-
-		void Begin();
-		void End();
-
-	private:
-		friend class InstanceManager;
-	};
-
-}
+#endif
