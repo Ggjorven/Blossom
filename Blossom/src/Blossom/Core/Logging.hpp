@@ -5,7 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace VkApp
+namespace Blossom
 {
 
 	class Log
@@ -41,11 +41,11 @@ namespace VkApp
 		//	}
 		//}
 
-		#define VKAPP_LOG_TRACE(...) spdlog::trace(__VA_ARGS__)
-		#define VKAPP_LOG_INFO(...) spdlog::info(__VA_ARGS__)
-		#define VKAPP_LOG_WARN(...) spdlog::warn(__VA_ARGS__)
-		#define VKAPP_LOG_ERROR(...) spdlog::error(__VA_ARGS__)
-		#define VKAPP_LOG_FATAL(...) spdlog::critical(__VA_ARGS__)
+		#define BL_LOG_TRACE(...) spdlog::trace(__VA_ARGS__)
+		#define BL_LOG_INFO(...) spdlog::info(__VA_ARGS__)
+		#define BL_LOG_WARN(...) spdlog::warn(__VA_ARGS__)
+		#define BL_LOG_ERROR(...) spdlog::error(__VA_ARGS__)
+		#define BL_LOG_FATAL(...) spdlog::critical(__VA_ARGS__)
 
 	private:
 		static std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> s_Sink;

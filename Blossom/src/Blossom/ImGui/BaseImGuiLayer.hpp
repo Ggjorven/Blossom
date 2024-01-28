@@ -2,7 +2,7 @@
 
 #include "Blossom/Core/Layer.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	class InstanceManager;

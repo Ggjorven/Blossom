@@ -9,7 +9,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace VkApp
+namespace Blossom
 {
 
 	struct MeshVertex
@@ -57,7 +57,7 @@ namespace VkApp
 		Mesh(const std::filesystem::path& path);
 		void Destroy();
 
-		#ifdef VKAPP_DEBUG
+		#ifdef Blossom_DEBUG
 		std::filesystem::path& GetPath() { return m_Path; }
 		#endif
 
@@ -75,7 +75,7 @@ namespace VkApp
 		void CreateIndexBuffer(const std::vector<uint32_t>& indices);
 
 	private:
-		#ifdef VKAPP_DEBUG
+		#ifdef Blossom_DEBUG
 		std::filesystem::path m_Path; // For debugging purposes
 		#endif
 

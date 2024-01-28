@@ -8,13 +8,13 @@
 
 #include "Blossom/Core/Application.hpp"
 
-#ifdef VKAPP_DIST
-#define VKAPP_VALIDATION_LAYERS 0
+#ifdef BL_DIST
+#define BL_VALIDATION_LAYERS 0
 #else
-#define VKAPP_VALIDATION_LAYERS 1
+#define BL_VALIDATION_LAYERS 1
 #endif
 
-namespace VkApp
+namespace Blossom
 {
 
 	// ===================================
@@ -46,7 +46,7 @@ namespace VkApp
 	{
 		if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 		{
-			VKAPP_LOG_WARN("Validation layer: {0}", pCallbackData->pMessage);
+			BL_LOG_WARN("Validation layer: {0}", pCallbackData->pMessage);
 			return VK_FALSE;
 		}
 
@@ -91,7 +91,7 @@ namespace VkApp
 
 		vkDestroyDevice(m_Device, nullptr);
 
-		#if VKAPP_VALIDATION_LAYERS
+		#if Blossom_VALIDATION_LAYERS
 		DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
 		#endif
 
@@ -105,8 +105,8 @@ namespace VkApp
 	void InstanceManager::CreateInstance()
 	{
 		//First run a check for validation layer support
-		if (VKAPP_VALIDATION_LAYERS && !ValidationLayersSupported())
-			VKAPP_LOG_ERROR("Validation layers requested, but not supported.");
+		if (BL_VALIDATION_LAYERS && !ValidationLayersSupported())
+			BL_LOG_ERROR("Validation layers requested, but not supported.");
 
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -127,7 +127,7 @@ namespace VkApp
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
-		#if VKAPP_VALIDATION_LAYERS
+		#if BL_VALIDATION_LAYERS
 		createInfo.enabledLayerCount = static_cast<uint32_t>(s_RequestedValidationLayers.size());
 		createInfo.ppEnabledLayerNames = s_RequestedValidationLayers.data();
 		#else
@@ -136,7 +136,7 @@ namespace VkApp
 
 		// Note(Jorben): Setup the debug messenger also for the create instance 
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = {};
-		#if VKAPP_VALIDATION_LAYERS
+		#if Blossom_VALIDATION_LAYERS
 		createInfo.enabledLayerCount = static_cast<uint32_t>(s_RequestedValidationLayers.size());
 		createInfo.ppEnabledLayerNames = s_RequestedValidationLayers.data();
 
@@ -149,19 +149,19 @@ namespace VkApp
 
 		// Create our vulkan instance
 		if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
-			VKAPP_LOG_FATAL("Failed to create Vulkan Instance.");
+			BL_LOG_FATAL("Failed to create Vulkan Instance.");
 	}
 
 	void InstanceManager::CreateDebugger()
 	{
-		#if !(VKAPP_VALIDATION_LAYERS)
+		#if !(Blossom_VALIDATION_LAYERS)
 		return;
 		#else
 		VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
 		SetDebugInfo(createInfo);
 
 		if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to set up debug messenger!");
+			BL_LOG_ERROR("Failed to set up debug messenger!");
 		#endif
 	}
 
@@ -170,7 +170,7 @@ namespace VkApp
 		GLFWwindow* handle = reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		if (glfwCreateWindowSurface(m_Instance, handle, nullptr, &m_Surface) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create window surface!");
+			BL_LOG_ERROR("Failed to create window surface!");
 	}
 
 	void InstanceManager::PickPhysicalDevice()
@@ -179,7 +179,7 @@ namespace VkApp
 		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
 
 		if (deviceCount == 0)
-			VKAPP_LOG_ERROR("Failed to find GPUs with Vulkan support!");
+			BL_LOG_ERROR("Failed to find GPUs with Vulkan support!");
 
 		std::vector<VkPhysicalDevice> devices(deviceCount);
 		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
@@ -195,7 +195,7 @@ namespace VkApp
 
 		// Note(Jorben): Check if no device was selected
 		if (m_PhysicalDevice == VK_NULL_HANDLE)
-			VKAPP_LOG_ERROR("Failed to find a suitable GPU!");
+			BL_LOG_ERROR("Failed to find a suitable GPU!");
 	}
 
 	void InstanceManager::CreateDevice()
@@ -227,7 +227,7 @@ namespace VkApp
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(s_RequestedDeviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = s_RequestedDeviceExtensions.data();
 
-		#if VKAPP_VALIDATION_LAYERS
+		#if Blossom_VALIDATION_LAYERS
 		createInfo.enabledLayerCount = static_cast<uint32_t>(s_RequestedValidationLayers.size());
 		createInfo.ppEnabledLayerNames = s_RequestedValidationLayers.data();
 		#else
@@ -235,7 +235,7 @@ namespace VkApp
 		#endif
 
 		if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create logical device!");
+			BL_LOG_ERROR("Failed to create logical device!");
 
 		// Retrieve the graphics & present queue handle
 		vkGetDeviceQueue(m_Device, indices.GraphicsFamily.value(), 0, &m_GraphicsQueue);
@@ -282,7 +282,7 @@ namespace VkApp
 
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		#if VKAPP_VALIDATION_LAYERS
+		#if Blossom_VALIDATION_LAYERS
 		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		#endif
 

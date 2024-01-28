@@ -9,7 +9,7 @@
 #include "Blossom/Renderer/InstanceManager.hpp"
 #include "Blossom/Renderer/SwapChainManager.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	// ===================================
@@ -26,7 +26,7 @@ namespace VkApp
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		if (vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &dstBuffer) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create buffer!");
+			BL_LOG_ERROR("Failed to create buffer!");
 
 		VkMemoryRequirements memRequirements = {};
 		vkGetBufferMemoryRequirements(logicalDevice, dstBuffer, &memRequirements);
@@ -37,7 +37,7 @@ namespace VkApp
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
 		if (vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &dstBufferMemory) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to allocate buffer memory!");
+			BL_LOG_ERROR("Failed to allocate buffer memory!");
 
 		vkBindBufferMemory(logicalDevice, dstBuffer, dstBufferMemory, 0);
 	}
@@ -64,7 +64,7 @@ namespace VkApp
 				return i;
 		}
 
-		VKAPP_LOG_ERROR("Failed to find suitable memory type!");
+		BL_LOG_ERROR("Failed to find suitable memory type!");
 		return -1;
 	}
 
@@ -116,11 +116,11 @@ namespace VkApp
 	{
 		auto logicalDevice = InstanceManager::Get()->GetLogicalDevice();
 
-		buffers.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
-		buffersMemory.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
-		mappedBuffers.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
+		buffers.resize(BL_MAX_FRAMES_IN_FLIGHT);
+		buffersMemory.resize(BL_MAX_FRAMES_IN_FLIGHT);
+		mappedBuffers.resize(BL_MAX_FRAMES_IN_FLIGHT);
 
-		for (size_t i = 0; i < VKAPP_MAX_FRAMES_IN_FLIGHT; i++) {
+		for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++) {
 			CreateBuffer(size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffers[i], buffersMemory[i]);
 
 			vkMapMemory(logicalDevice, buffersMemory[i], 0, size, 0, &mappedBuffers[i]);
@@ -145,7 +145,7 @@ namespace VkApp
 		mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
 
 		if (!pixels)
-			VKAPP_LOG_ERROR("Failed to load texture image!");
+			BL_LOG_ERROR("Failed to load texture image!");
 
 		CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingMemory);
 
@@ -187,7 +187,7 @@ namespace VkApp
 
 		VkImageView imageView;
 		if (vkCreateImageView(InstanceManager::Get()->GetLogicalDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create texture image view!");
+			BL_LOG_ERROR("Failed to create texture image view!");
 
 		return imageView;
 	}
@@ -220,7 +220,7 @@ namespace VkApp
 
 		VkSampler sampler;
 		if (vkCreateSampler(InstanceManager::Get()->GetLogicalDevice(), &samplerInfo, nullptr, &sampler) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create texture sampler!");
+			BL_LOG_ERROR("Failed to create texture sampler!");
 
 		return sampler;
 	}
@@ -245,7 +245,7 @@ namespace VkApp
 		auto logicalDevice = InstanceManager::Get()->GetLogicalDevice();
 
 		if (vkCreateImage(logicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create image!");
+			BL_LOG_ERROR("Failed to create image!");
 
 		VkMemoryRequirements memRequirements = {};
 		vkGetImageMemoryRequirements(logicalDevice, image, &memRequirements);
@@ -256,7 +256,7 @@ namespace VkApp
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
 		if (vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to allocate image memory!");
+			BL_LOG_ERROR("Failed to allocate image memory!");
 
 		vkBindImageMemory(logicalDevice, image, imageMemory, 0);
 	}
@@ -355,7 +355,7 @@ namespace VkApp
 		vkGetPhysicalDeviceFormatProperties(InstanceManager::Get()->GetPhysicalDevice(), imageFormat, &formatProperties);
 
 		if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
-			VKAPP_LOG_ERROR("Texture image format does not support linear blitting!");
+			BL_LOG_ERROR("Texture image format does not support linear blitting!");
 
 		VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -446,7 +446,7 @@ namespace VkApp
 
 		VkCommandBuffer commandBuffer;
 		if (vkAllocateCommandBuffers(InstanceManager::Get()->GetLogicalDevice(), &allocInfo, &commandBuffer))
-			VKAPP_LOG_WARN("Failed to create single time command buffer!");
+			BL_LOG_WARN("Failed to create single time command buffer!");
 
 		VkCommandBufferBeginInfo beginInfo = {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

@@ -5,7 +5,7 @@
 
 #include "Blossom/Core/Events.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	class Layer
@@ -30,7 +30,7 @@ namespace VkApp
 
 }
 
-namespace VkApp
+namespace Blossom
 {
 
 	class LayerStack

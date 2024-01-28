@@ -1,7 +1,7 @@
 #include "blpch.h"
 #include "Layer.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	Layer::Layer(const std::string& LayerName)
@@ -11,7 +11,7 @@ namespace VkApp
 
 }
 
-namespace VkApp
+namespace Blossom
 {
 
 	LayerStack::LayerStack()

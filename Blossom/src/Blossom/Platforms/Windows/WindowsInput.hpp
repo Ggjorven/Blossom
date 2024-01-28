@@ -2,7 +2,7 @@
 
 #include "Blossom/Core/Input/Input.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	class WindowsInput : public Input

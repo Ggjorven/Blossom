@@ -5,9 +5,9 @@
 #include <functional>
 
 #define BIT(x) (1 << x)
-#define VKAPP_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define BL_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-namespace VkApp
+namespace Blossom
 {
 
 	enum class EventType
@@ -88,7 +88,7 @@ namespace VkApp
 	}
 }
 
-namespace VkApp
+namespace Blossom
 {
 
 	class WindowResizeEvent : public Event
@@ -124,7 +124,7 @@ namespace VkApp
 
 }
 
-namespace VkApp
+namespace Blossom
 {
 
 	class KeyEvent : public Event
@@ -194,7 +194,7 @@ namespace VkApp
 
 }
 
-namespace VkApp
+namespace Blossom
 {
 
 	class MouseMovedEvent : public Event

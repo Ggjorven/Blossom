@@ -7,7 +7,7 @@
 
 #include "Blossom/Renderer/Renderer.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	Application* Application::s_Instance = nullptr;
@@ -33,8 +33,8 @@ namespace VkApp
 	{
 		EventHandler handler(e);
 
-		handler.Handle<WindowCloseEvent>(VKAPP_BIND_EVENT_FN(Application::OnWindowClose));
-		handler.Handle<WindowResizeEvent>(VKAPP_BIND_EVENT_FN(Application::OnWindowResize));
+		handler.Handle<WindowCloseEvent>(BL_BIND_EVENT_FN(Application::OnWindowClose));
+		handler.Handle<WindowResizeEvent>(BL_BIND_EVENT_FN(Application::OnWindowResize));
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -96,7 +96,7 @@ namespace VkApp
 		Log::Init();
 
 		m_Window = Window::Create(appInfo.WindowProperties);
-		m_Window->SetEventCallBack(VKAPP_BIND_EVENT_FN(Application::OnEvent));
+		m_Window->SetEventCallBack(BL_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
 

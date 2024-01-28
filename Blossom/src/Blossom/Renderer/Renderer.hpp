@@ -10,10 +10,10 @@
 #include "Blossom/Renderer/SwapChainManager.hpp"
 #include "Blossom/Renderer/GraphicsPipelineManager.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
-	#define VKAPP_MAX_FRAMES_IN_FLIGHT 2
+	#define BL_MAX_FRAMES_IN_FLIGHT 2
 	typedef std::function<void(VkCommandBuffer&, uint32_t)> RenderFunction;
 	typedef std::function<void(VkCommandBuffer&)> UIFunction;
 

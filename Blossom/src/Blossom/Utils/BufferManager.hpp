@@ -5,7 +5,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace VkApp
+namespace Blossom
 {
 
 	class BufferManager

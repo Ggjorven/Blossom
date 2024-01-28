@@ -6,12 +6,12 @@
 #include "Blossom/Renderer/InstanceManager.hpp"
 #include "Blossom/Utils/BufferManager.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	Mesh::Mesh(const std::filesystem::path& path)
 	{
-		#ifdef VKAPP_DEBUG
+		#ifdef Blossom_DEBUG
 		m_Path = path;
 		#endif
 
@@ -36,7 +36,7 @@ namespace VkApp
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
         {
-            VKAPP_LOG_ERROR("Failed to load mesh from: \"{}\"", path.string());
+            BL_LOG_ERROR("Failed to load mesh from: \"{}\"", path.string());
             return;
         }
 
@@ -98,7 +98,7 @@ namespace VkApp
 	{
         //for (auto& vertice : vertices)
         //{
-        //    VKAPP_LOG_TRACE("X: {0}, Y: {1}, Z: {2}", vertice.Position.x, vertice.Position.y, vertice.Position.z);
+        //    BL_LOG_TRACE("X: {0}, Y: {1}, Z: {2}", vertice.Position.x, vertice.Position.y, vertice.Position.z);
         //}
 
         BufferManager::CreateVertexBuffer(m_VertexBuffer, m_VertexBufferMemory, (void*)vertices.data(), sizeof(vertices[0]) * vertices.size());

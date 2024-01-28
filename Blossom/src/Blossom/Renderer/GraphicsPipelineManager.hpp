@@ -9,7 +9,7 @@
 
 #include <glm/glm.hpp>
 
-namespace VkApp
+namespace Blossom
 {
 
 	class Renderer;
@@ -80,7 +80,7 @@ namespace VkApp
 		std::vector<VkDescriptorSetLayout> m_DescriptorLayouts = { };
 		std::vector<VkDescriptorPool> m_DescriptorPools = { };
 
-		// Note(Jorben): The first index is the index of the descriptor and the second are VKAPP_MAX_FRAMES_INFLIGHT of sets.
+		// Note(Jorben): The first index is the index of the descriptor and the second are Blossom_MAX_FRAMES_INFLIGHT of sets.
 		std::vector<std::vector<VkDescriptorSet>> m_DescriptorSets = { };
 
 		friend class GraphicsPipelineManager;

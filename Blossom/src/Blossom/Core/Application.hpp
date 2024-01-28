@@ -11,7 +11,7 @@
 #include <memory>
 #include <filesystem>
 
-namespace VkApp
+namespace Blossom
 {
 
 	struct AppInfo
@@ -22,6 +22,8 @@ namespace VkApp
 		char** Args = nullptr;
 
 		AppInfo() = default;
+		AppInfo(int argc, char** argv) 
+			: ArgCount(argc), Args(argv) {}
 	};
 
 	class Application

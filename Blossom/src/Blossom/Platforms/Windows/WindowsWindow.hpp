@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace VkApp
+namespace Blossom
 {
 
 	class WindowsWindow : public Window

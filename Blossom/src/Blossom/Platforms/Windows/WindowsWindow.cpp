@@ -6,7 +6,7 @@
 
 #include "Blossom/Renderer/SwapChainManager.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	bool WindowsWindow::s_GLFWinitialized = false;
@@ -16,7 +16,7 @@ namespace VkApp
 	{
 		if (!Init(properties))
 		{
-			VKAPP_LOG_ERROR("{0}", "WindowsWindow failed to initialize.");
+			BL_LOG_ERROR("{0}", "WindowsWindow failed to initialize.");
 			return;
 		}
 	}
@@ -56,7 +56,7 @@ namespace VkApp
 			int succes = glfwInit();
 			if (!succes)
 			{
-				VKAPP_LOG_ERROR("glfwInit() failed");
+				BL_LOG_ERROR("glfwInit() failed");
 				return 0;
 			}
 			s_GLFWinitialized = true;
@@ -183,7 +183,7 @@ namespace VkApp
 
 	void WindowsWindow::ErrorCallBack(int errorCode, const char* description)
 	{
-		VKAPP_LOG_ERROR("[GLFW]: ({0}), {1}", errorCode, description);
+		BL_LOG_ERROR("[GLFW]: ({0}), {1}", errorCode, description);
 	}
 
 }

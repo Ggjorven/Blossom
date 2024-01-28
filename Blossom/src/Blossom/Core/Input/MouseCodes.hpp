@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VkApp
+namespace Blossom
 {
 
 	// From glfw3.h

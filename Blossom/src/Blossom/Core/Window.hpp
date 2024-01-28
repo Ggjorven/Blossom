@@ -6,7 +6,7 @@
 
 #include "Blossom/Core/Events.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	using EventCallBackFunction = std::function<void(Event&)>;

@@ -17,7 +17,7 @@
 
 #include "Blossom/Utils/BufferManager.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	BaseImGuiLayer::BaseImGuiLayer()

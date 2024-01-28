@@ -12,7 +12,7 @@
 #include "Blossom/Renderer/InstanceManager.hpp" // For the retrieval of the logical device
 #include "Blossom/Renderer/SwapChainManager.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	// ===================================
@@ -70,7 +70,7 @@ namespace VkApp
 
 		VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
 		if (vkCreateDescriptorSetLayout(s_InstanceManager->GetLogicalDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create descriptor set layout!");
+			BL_LOG_ERROR("Failed to create descriptor set layout!");
 
 		return descriptorSetLayout;
 	}
@@ -85,7 +85,7 @@ namespace VkApp
 		{
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = type;
-			poolSize.descriptorCount = DescriptorSets::AmountOf(type, descriptors) * VKAPP_MAX_FRAMES_IN_FLIGHT;
+			poolSize.descriptorCount = DescriptorSets::AmountOf(type, descriptors) * BL_MAX_FRAMES_IN_FLIGHT;
 
 			poolSizes.push_back(poolSize);
 		}
@@ -94,30 +94,30 @@ namespace VkApp
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = static_cast<uint32_t>(VKAPP_MAX_FRAMES_IN_FLIGHT); // Amount of sets?
+		poolInfo.maxSets = static_cast<uint32_t>(BL_MAX_FRAMES_IN_FLIGHT); // Amount of sets?
 
 		VkDescriptorPool pool = VK_NULL_HANDLE;
 		if (vkCreateDescriptorPool(s_InstanceManager->GetLogicalDevice(), &poolInfo, nullptr, &pool) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create descriptor pool!");
+			BL_LOG_ERROR("Failed to create descriptor pool!");
 
 		return pool;
 	}
 
 	std::vector<VkDescriptorSet> DescriptorSets::CreateDescriptorSets(VkDescriptorSetLayout& layout, VkDescriptorPool& pool, const std::vector<DescriptorInfo>& descriptors)
 	{
-		std::vector<VkDescriptorSetLayout> layouts(VKAPP_MAX_FRAMES_IN_FLIGHT, layout);
+		std::vector<VkDescriptorSetLayout> layouts(BL_MAX_FRAMES_IN_FLIGHT, layout);
 
 		VkDescriptorSetAllocateInfo allocInfo = {};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = pool;
-		allocInfo.descriptorSetCount = static_cast<uint32_t>(VKAPP_MAX_FRAMES_IN_FLIGHT);
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(BL_MAX_FRAMES_IN_FLIGHT);
 		allocInfo.pSetLayouts = layouts.data();
 
 		std::vector<VkDescriptorSet> descriptorSets = { };
-		descriptorSets.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
+		descriptorSets.resize(BL_MAX_FRAMES_IN_FLIGHT);
 
 		if (vkAllocateDescriptorSets(s_InstanceManager->GetLogicalDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to allocate descriptor sets!");
+			BL_LOG_ERROR("Failed to allocate descriptor sets!");
 
 		return descriptorSets;
 	}
@@ -152,7 +152,7 @@ namespace VkApp
 
 		if (it == m_GraphicsPipelines.end())
 		{
-			VKAPP_LOG_WARN("Graphics Pipeline by ID \"{0}\" not found", id);
+			BL_LOG_WARN("Graphics Pipeline by ID \"{0}\" not found", id);
 
 			GraphicsPipeline pipeline;
 			return pipeline;
@@ -192,7 +192,7 @@ namespace VkApp
 		std::ifstream file(path, std::ios::ate | std::ios::binary);
 
 		if (!file.is_open() || !file.good())
-			VKAPP_LOG_ERROR("Failed to open file!");
+			BL_LOG_ERROR("Failed to open file!");
 
 		size_t fileSize = (size_t)file.tellg();
 		std::vector<char> buffer(fileSize);
@@ -213,7 +213,7 @@ namespace VkApp
 
 		VkShaderModule shaderModule = {};
 		if (vkCreateShaderModule(s_InstanceManager->m_Device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create shader module!");
+			BL_LOG_ERROR("Failed to create shader module!");
 
 		return shaderModule;
 	}
@@ -371,7 +371,7 @@ namespace VkApp
 		pipelineLayoutInfo.pSetLayouts = m_DescriptorLayouts.data();	// TODO(Jorben): Remove?
 
 		if (vkCreatePipelineLayout(s_InstanceManager->m_Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create pipeline layout!");
+			BL_LOG_ERROR("Failed to create pipeline layout!");
 
 		// Create the actual graphics pipeline (where we actually use the shaders and other info)
 		VkGraphicsPipelineCreateInfo pipelineInfo = {};
@@ -393,7 +393,7 @@ namespace VkApp
 		pipelineInfo.basePipelineIndex = -1; // Optional
 
 		if (vkCreateGraphicsPipelines(s_InstanceManager->m_Device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create graphics pipeline!");
+			BL_LOG_ERROR("Failed to create graphics pipeline!");
 
 		// Destroy at the end
 		vkDestroyShaderModule(s_InstanceManager->m_Device, fragShaderModule, nullptr);
@@ -445,10 +445,10 @@ namespace VkApp
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = static_cast<uint32_t>(VKAPP_MAX_FRAMES_IN_FLIGHT); // Amount of sets?
+		poolInfo.maxSets = static_cast<uint32_t>(BL_MAX_FRAMES_IN_FLIGHT); // Amount of sets?
 
 		if (vkCreateDescriptorPool(s_InstanceManager->GetLogicalDevice(), &poolInfo, nullptr, &m_ImGuiDescriptorPool) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create descriptor pool!");
+			BL_LOG_ERROR("Failed to create descriptor pool!");
 	}
 
 }

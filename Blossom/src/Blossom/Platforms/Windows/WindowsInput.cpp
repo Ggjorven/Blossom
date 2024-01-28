@@ -5,7 +5,7 @@
 
 #include "Blossom/Core/Application.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
     std::unique_ptr<Input> Input::s_Instance = std::make_unique<WindowsInput>();

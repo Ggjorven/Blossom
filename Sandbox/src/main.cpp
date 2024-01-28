@@ -2,11 +2,11 @@
 #include <Blossom/Entrypoint.hpp>
 
 // Create your own application class
-class Sandbox : public VkApp::Application
+class Sandbox : public Blossom::Application
 {
 public:
-	Sandbox(const VkApp::AppInfo& appInfo)
-		: VkApp::Application(appInfo)
+	Sandbox(const Blossom::AppInfo& appInfo)
+		: Blossom::Application(appInfo)
 	{
 		// Add your own custom layers/overlays
 	}
@@ -17,13 +17,9 @@ public:
 // ----------------------------------------------------------------
 //                    Set Application specs here...
 // ----------------------------------------------------------------
-VkApp::Application* VkApp::CreateApplication(int argc, char* argv[])
+Blossom::Application* Blossom::CreateApplication(int argc, char* argv[])
 {
-	AppInfo appInfo;
-	appInfo.ArgCount = argc;
-	appInfo.Args = argv;
-
-	// Add more application specs...
+	AppInfo appInfo(argc, argv);
 	appInfo.WindowProperties.Name = "Custom";
 	appInfo.WindowProperties.VSync = false;
 

@@ -5,7 +5,7 @@
 
 #include "Blossom/Core/Logging.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 	// ===================================
 	// ------------ Static ---------------
@@ -32,7 +32,7 @@ namespace VkApp
 		s_Instance->m_SwapChainManager.Destroy();
 
 		// Destoy our rendering specific stuff before destroying the instance
-		for (size_t i = 0; i < VKAPP_MAX_FRAMES_IN_FLIGHT; i++)
+		for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			vkDestroySemaphore(s_Instance->m_InstanceManager.m_Device, s_Instance->m_RenderFinishedSemaphores[i], nullptr);
 			vkDestroySemaphore(s_Instance->m_InstanceManager.m_Device, s_Instance->m_ImageAvailableSemaphores[i], nullptr);
@@ -87,12 +87,12 @@ namespace VkApp
 		poolInfo.queueFamilyIndex = queueFamilyIndices.GraphicsFamily.value();
 
 		if (vkCreateCommandPool(m_InstanceManager.m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create command pool!");
+			BL_LOG_ERROR("Failed to create command pool!");
 	}
 
 	void Renderer::CreateCommandBuffers()
 	{
-		m_CommandBuffers.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
+		m_CommandBuffers.resize(BL_MAX_FRAMES_IN_FLIGHT);
 
 		VkCommandBufferAllocateInfo allocInfo = {};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -101,14 +101,14 @@ namespace VkApp
 		allocInfo.commandBufferCount = (uint32_t)m_CommandBuffers.size();
 
 		if (vkAllocateCommandBuffers(m_InstanceManager.m_Device, &allocInfo, m_CommandBuffers.data()) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to allocate command buffers!");
+			BL_LOG_ERROR("Failed to allocate command buffers!");
 	}
 
 	void Renderer::CreateSyncObjects()
 	{
-		m_ImageAvailableSemaphores.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
-		m_RenderFinishedSemaphores.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
-		m_InFlightFences.resize(VKAPP_MAX_FRAMES_IN_FLIGHT);
+		m_ImageAvailableSemaphores.resize(BL_MAX_FRAMES_IN_FLIGHT);
+		m_RenderFinishedSemaphores.resize(BL_MAX_FRAMES_IN_FLIGHT);
+		m_InFlightFences.resize(BL_MAX_FRAMES_IN_FLIGHT);
 
 		VkSemaphoreCreateInfo semaphoreInfo = {};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -118,13 +118,13 @@ namespace VkApp
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 		// Create our objects
-		for (size_t i = 0; i < VKAPP_MAX_FRAMES_IN_FLIGHT; i++)
+		for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			if (vkCreateSemaphore(m_InstanceManager.m_Device, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
 				vkCreateSemaphore(m_InstanceManager.m_Device, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
 				vkCreateFence(m_InstanceManager.m_Device, &fenceInfo, nullptr, &m_InFlightFences[i]) != VK_SUCCESS)
 			{
-				VKAPP_LOG_ERROR("Failed to create synchronization objects for a frame!");
+				BL_LOG_ERROR("Failed to create synchronization objects for a frame!");
 			}
 		}
 	}
@@ -145,7 +145,7 @@ namespace VkApp
 			return;
 		}
 		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-			VKAPP_LOG_ERROR("Failed to acquire swap chain image!");
+			BL_LOG_ERROR("Failed to acquire swap chain image!");
 
 		// Only reset the fence if we actually submit the work
 		vkResetFences(m_InstanceManager.m_Device, 1, &m_InFlightFences[m_CurrentFrame]);
@@ -172,7 +172,7 @@ namespace VkApp
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
 		if (vkQueueSubmit(m_InstanceManager.m_GraphicsQueue, 1, &submitInfo, m_InFlightFences[m_CurrentFrame]) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to submit draw command buffer!");
+			BL_LOG_ERROR("Failed to submit draw command buffer!");
 
 		VkPresentInfoKHR presentInfo = {};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -191,10 +191,10 @@ namespace VkApp
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 			m_SwapChainManager.RecreateSwapChain();
 		else if (result != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to present swap chain image!");
+			BL_LOG_ERROR("Failed to present swap chain image!");
 
 		// Note(Jorben): We use the & operator since MAX_FRAMES_IN_FLIGHT is a power of 2 and this is a lot cheaper, if it's not use the % operator
-		m_CurrentFrame = (m_CurrentFrame + 1) & VKAPP_MAX_FRAMES_IN_FLIGHT;
+		m_CurrentFrame = (m_CurrentFrame + 1) & BL_MAX_FRAMES_IN_FLIGHT;
 	}
 
 	void Renderer::RecordCommandBuffer(VkCommandBuffer& commandBuffer, uint32_t imageIndex)
@@ -203,7 +203,7 @@ namespace VkApp
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
 		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to begin recording command buffer!");
+			BL_LOG_ERROR("Failed to begin recording command buffer!");
 
 		std::array<VkClearValue, 2> clearValues = {};
 		clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
@@ -247,7 +247,7 @@ namespace VkApp
 		vkCmdEndRenderPass(commandBuffer);
 
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to record command buffer!");
+			BL_LOG_ERROR("Failed to record command buffer!");
 	}
 
 }

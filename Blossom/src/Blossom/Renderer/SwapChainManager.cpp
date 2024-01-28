@@ -11,7 +11,7 @@
 #include "Blossom/Renderer/InstanceManager.hpp" // For the retrieval of the logical device
 #include "Blossom/Utils/BufferManager.hpp" 
 
-namespace VkApp
+namespace Blossom
 {
 
 	// ===================================
@@ -129,7 +129,7 @@ namespace VkApp
 
 		// Creation of the swapchain
 		if (vkCreateSwapchainKHR(s_InstanceManager->m_Device, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create swap chain!");
+			BL_LOG_ERROR("Failed to create swap chain!");
 
 		// Note(Jorben): We query the amount of images again, because vulkan is allowed to create a swapchain with more images.
 		vkGetSwapchainImagesKHR(s_InstanceManager->m_Device, m_SwapChain, &imageCount, nullptr);
@@ -210,7 +210,7 @@ namespace VkApp
 		renderPassInfo.pDependencies = &dependency;
 
 		if (vkCreateRenderPass(s_InstanceManager->m_Device, &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
-			VKAPP_LOG_ERROR("Failed to create render pass!");
+			BL_LOG_ERROR("Failed to create render pass!");
 	}
 
 	void SwapChainManager::CreateDepthResources()
@@ -242,7 +242,7 @@ namespace VkApp
 			framebufferInfo.layers = 1;
 
 			if (vkCreateFramebuffer(s_InstanceManager->m_Device, &framebufferInfo, nullptr, &m_SwapChainFramebuffers[i]) != VK_SUCCESS)
-				VKAPP_LOG_ERROR("Failed to create framebuffer!");
+				BL_LOG_ERROR("Failed to create framebuffer!");
 		}
 	}
 
@@ -323,7 +323,7 @@ namespace VkApp
 				return format;
 		}
 
-		VKAPP_LOG_ERROR("Failed to find supported format!");
+		BL_LOG_ERROR("Failed to find supported format!");
 		return VK_FORMAT_UNDEFINED;
 	}
 

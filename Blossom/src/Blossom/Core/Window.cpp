@@ -3,7 +3,7 @@
 
 #include "Blossom/Platforms/Windows/WindowsWindow.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	std::unique_ptr<Window> Window::Create(const WindowProperties properties)

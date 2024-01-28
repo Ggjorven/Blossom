@@ -8,7 +8,7 @@
 #include "Blossom/Core/Input/MouseCodes.hpp"
 #include "Blossom/Core/Input/KeyCodes.hpp"
 
-namespace VkApp
+namespace Blossom
 {
 
 	enum class CursorMode
