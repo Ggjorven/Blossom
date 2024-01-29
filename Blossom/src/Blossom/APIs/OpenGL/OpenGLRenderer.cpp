@@ -17,4 +17,8 @@ namespace Blossom
 		Renderer::GetAPISpecs().ClearColour = colour;
 	}
 
+	void OpenGLRenderer::UseControllerImpl(const RenderController& controller)
+	{
+	}
+
 }

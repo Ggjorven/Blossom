@@ -1,15 +1,15 @@
 #pragma once
 
 #include "Blossom/Renderer/Renderer.hpp"
-	
+
 namespace Blossom
 {
 
-	class OpenGLRenderer : public Renderer
+	class VulkanRenderer : public Renderer
 	{
 	public:
-		OpenGLRenderer() = default;
-		virtual ~OpenGLRenderer() = default;
+		VulkanRenderer() = default;
+		virtual ~VulkanRenderer() = default;
 
 	private:
 		void ClearImpl() override;

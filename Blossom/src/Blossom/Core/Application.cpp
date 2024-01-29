@@ -61,11 +61,10 @@ namespace Blossom
 				layer->OnRender();
 			}
 
-			// TODO(Jorben): Add ImGui back
-			//m_ImGuiLayer->Begin();
-			//for (Layer* layer : m_LayerStack)
-			//	layer->OnImGuiRender();
-			//m_ImGuiLayer->End();
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
 			m_Window->OnRender();
 		}
@@ -92,8 +91,8 @@ namespace Blossom
 
 		Renderer::Init(appInfo.APISpecs);
 
-		//m_ImGuiLayer = new BaseImGuiLayer();
-		//AddOverlay(m_ImGuiLayer);
+		m_ImGuiLayer = BaseImGuiLayer::Create();
+		AddOverlay(m_ImGuiLayer);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

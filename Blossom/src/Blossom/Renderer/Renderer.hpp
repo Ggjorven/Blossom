@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "Blossom/Renderer/RenderingAPI.hpp"
+#include "Blossom/Renderer/RenderController.hpp"
 
 namespace Blossom
 {
@@ -20,6 +21,8 @@ namespace Blossom
 		static void Clear() { s_Instance->ClearImpl(); }
 		static void SetClearColour(const glm::vec4& colour) { s_Instance->SetClearColourImpl(colour); }
 
+		static void UseController(const RenderController& controller) { s_Instance->UseControllerImpl(controller); }
+
 		static RenderingAPI GetAPI() { return s_API; }
 		static APISpecifications& GetAPISpecs() { return s_APISpecs; }
 
@@ -27,10 +30,14 @@ namespace Blossom
 		virtual void ClearImpl() = 0;
 		virtual void SetClearColourImpl(const glm::vec4& colour) = 0;
 
+		virtual void UseControllerImpl(const RenderController& controller) = 0;
+
 	private:
 		static std::unique_ptr<Renderer> s_Instance;
 		static RenderingAPI s_API;
 		static APISpecifications s_APISpecs;
+
+		static RenderController s_BoundController;
 	};
 
 }

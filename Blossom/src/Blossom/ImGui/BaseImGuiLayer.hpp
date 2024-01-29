@@ -13,6 +13,8 @@ namespace Blossom
 
 		virtual void Begin() = 0;
 		virtual void End() = 0;
+
+		static BaseImGuiLayer* Create();
 	};
 
 }
