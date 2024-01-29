@@ -2,6 +2,8 @@
 
 #include "Blossom/Core/Window.hpp"
 
+#include "Blossom/Renderer/GraphicsContext.hpp"
+
 #include <GLFW/glfw3.h>
 
 namespace Blossom
@@ -38,8 +40,9 @@ namespace Blossom
 		static bool s_GLFWinitialized;
 		static uint32_t s_Instances;
 
-		GLFWwindow* m_Window;
-		WindowData m_Data;
+		GLFWwindow* m_Window = nullptr;
+		std::unique_ptr<GraphicsContext> m_GraphicsContext = nullptr;
+		WindowData m_Data = {};
 
 	};
 

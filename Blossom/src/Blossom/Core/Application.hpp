@@ -7,6 +7,8 @@
 
 #include "Blossom/ImGui/BaseImGuiLayer.hpp"
 
+#include "Blossom/Renderer/RenderingAPI.hpp"
+
 #include <vector>
 #include <memory>
 #include <filesystem>
@@ -17,7 +19,8 @@ namespace Blossom
 	struct AppInfo
 	{
 	public:
-		WindowProperties WindowProperties;
+		WindowProperties WindowProperties = {};
+		APISpecifications APISpecs = {};
 		int ArgCount = 0;
 		char** Args = nullptr;
 

@@ -4,19 +4,20 @@
 #include "Blossom/Core/Events.hpp"
 #include "Blossom/Core/Logging.hpp"
 
+#include "Blossom/Renderer/Renderer.hpp"
+
 namespace Blossom
 {
 
 	bool WindowsWindow::s_GLFWinitialized = false;
 	uint32_t WindowsWindow::s_Instances = 0u;
 
+	static void ConfigureWindowPreferences();
+
 	WindowsWindow::WindowsWindow(const WindowProperties properties)
 	{
-		if (!Init(properties))
-		{
+		if (Init(properties))
 			BL_LOG_ERROR("{0}", "WindowsWindow failed to initialize.");
-			return;
-		}
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -31,11 +32,11 @@ namespace Blossom
 
 	void WindowsWindow::OnRender()
 	{
+		m_GraphicsContext->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		// TODO
 		m_Data.Vsync = enabled;
 	}
 
@@ -46,31 +47,27 @@ namespace Blossom
 	
 	bool WindowsWindow::Init(WindowProperties properties)
 	{
-		//Setup
 		if (!s_GLFWinitialized)
 		{
 			int succes = glfwInit();
 			if (!succes)
 			{
 				BL_LOG_ERROR("glfwInit() failed");
-				return 0;
+				return true;
 			}
 			s_GLFWinitialized = true;
+			glfwSetErrorCallback(ErrorCallBack);
 		}
-		glfwSetErrorCallback(ErrorCallBack);
-
-		//Window creation
-		//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		//if (!properties.Titlebar) glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-
 		m_Data.Vsync = properties.VSync;
 
+		ConfigureWindowPreferences();
 		m_Window = glfwCreateWindow((int)properties.Width, (int)properties.Height, properties.Name.c_str(), nullptr, nullptr);
 		s_Instances++;
 
-		glfwSetWindowUserPointer(m_Window, &m_Data); //So we can access/get to the data in lambda functions
+		m_GraphicsContext = GraphicsContext::Create(m_Window);
+		m_GraphicsContext->Init();
 
-		//Set window position
+		glfwSetWindowUserPointer(m_Window, &m_Data); //So we can access/get to the data in lambda functions
 		if (properties.CustomPos) glfwSetWindowPos(m_Window, properties.X, properties.Y);
 
 		//Event system
@@ -165,7 +162,7 @@ namespace Blossom
 			});
 
 
-		return 1;
+		return false;
 	}
 
 	void WindowsWindow::Shutdown()
@@ -180,6 +177,25 @@ namespace Blossom
 	void WindowsWindow::ErrorCallBack(int errorCode, const char* description)
 	{
 		BL_LOG_ERROR("[GLFW]: ({0}), {1}", errorCode, description);
+	}
+
+	void ConfigureWindowPreferences()
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RenderingAPI::OpenGL:
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+			break;
+		case RenderingAPI::Vulkan:
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+			break;
+
+		default:
+			BL_LOG_ERROR("Unknown Renderer::API selected.");
+			break;
+		}
 	}
 
 }

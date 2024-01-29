@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Blossom/Core/Logging.hpp"
+#include "Blossom/Renderer/Renderer.hpp"
 
 namespace Blossom
 {
@@ -29,8 +30,8 @@ namespace Blossom
 	{
 		EventHandler handler(e);
 
-		handler.Handle<WindowCloseEvent>(Blossom_BIND_EVENT_FN(Application::OnWindowClose));
-		handler.Handle<WindowResizeEvent>(Blossom_BIND_EVENT_FN(Application::OnWindowResize));
+		handler.Handle<WindowCloseEvent>(BL_BIND_EVENT_FN(Application::OnWindowClose));
+		handler.Handle<WindowResizeEvent>(BL_BIND_EVENT_FN(Application::OnWindowResize));
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -44,14 +45,14 @@ namespace Blossom
 	{
 		while (m_Running)
 		{
-			//Delta Time
+			// Delta Time
 			float currentTime = (float)glfwGetTime();
 			static float lastTime = 0.0f;
 
 			float deltaTime = currentTime - lastTime;
 			lastTime = currentTime;
 
-			//Update & Render
+			// Update & Render
 			m_Window->OnUpdate();
 
 			for (Layer* layer : m_LayerStack)
@@ -87,7 +88,9 @@ namespace Blossom
 		Log::Init();
 
 		m_Window = Window::Create(appInfo.WindowProperties);
-		m_Window->SetEventCallBack(Blossom_BIND_EVENT_FN(Application::OnEvent));
+		m_Window->SetEventCallBack(BL_BIND_EVENT_FN(Application::OnEvent));
+
+		Renderer::Init(appInfo.APISpecs);
 
 		//m_ImGuiLayer = new BaseImGuiLayer();
 		//AddOverlay(m_ImGuiLayer);
