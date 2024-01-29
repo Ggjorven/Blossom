@@ -5,6 +5,8 @@
 
 #include "Blossom/Core/Logging.hpp"
 
+#include "Blossom/APIs/Vulkan/VulkanManager.hpp"
+
 namespace Blossom
 {
 
@@ -15,7 +17,11 @@ namespace Blossom
 
 	void VulkanContext::Init()
 	{
+		m_Instance = std::make_unique<VulkanInstance>();
+		m_SwapChain = std::make_unique<VulkanSwapChain>();
+		m_Resources = std::make_unique<VulkanResources>();
 
+		VulkanManager::Init();
 	}
 
 	void VulkanContext::Destroy()
