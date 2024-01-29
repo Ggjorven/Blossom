@@ -5,8 +5,6 @@
 
 #include "Blossom/Core/Logging.hpp"
 
-#include "Blossom/Renderer/Renderer.hpp"
-
 namespace Blossom
 {
 
@@ -25,16 +23,14 @@ namespace Blossom
 			layer->OnDetach();
 			delete layer;
 		}
-
-		Renderer::Destroy();
 	}
 
 	void Application::OnEvent(Event& e)
 	{
 		EventHandler handler(e);
 
-		handler.Handle<WindowCloseEvent>(BL_BIND_EVENT_FN(Application::OnWindowClose));
-		handler.Handle<WindowResizeEvent>(BL_BIND_EVENT_FN(Application::OnWindowResize));
+		handler.Handle<WindowCloseEvent>(Blossom_BIND_EVENT_FN(Application::OnWindowClose));
+		handler.Handle<WindowResizeEvent>(Blossom_BIND_EVENT_FN(Application::OnWindowResize));
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -57,7 +53,6 @@ namespace Blossom
 
 			//Update & Render
 			m_Window->OnUpdate();
-			//ProcessEvents();
 
 			for (Layer* layer : m_LayerStack)
 			{
@@ -65,15 +60,11 @@ namespace Blossom
 				layer->OnRender();
 			}
 
-			if (m_ImGuiLayer)
-			{
-				m_ImGuiLayer->Begin();
-				for (Layer* layer : m_LayerStack)
-					layer->OnImGuiRender();
-				m_ImGuiLayer->End();
-			}
-
-			Renderer::Display();
+			// TODO(Jorben): Add ImGui back
+			//m_ImGuiLayer->Begin();
+			//for (Layer* layer : m_LayerStack)
+			//	layer->OnImGuiRender();
+			//m_ImGuiLayer->End();
 
 			m_Window->OnRender();
 		}
@@ -96,19 +87,15 @@ namespace Blossom
 		Log::Init();
 
 		m_Window = Window::Create(appInfo.WindowProperties);
-		m_Window->SetEventCallBack(BL_BIND_EVENT_FN(Application::OnEvent));
+		m_Window->SetEventCallBack(Blossom_BIND_EVENT_FN(Application::OnEvent));
 
-		Renderer::Init();
-
-		//Add ImGui
-		m_ImGuiLayer = new BaseImGuiLayer();
-		AddOverlay(m_ImGuiLayer);
+		//m_ImGuiLayer = new BaseImGuiLayer();
+		//AddOverlay(m_ImGuiLayer);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
-
 		return false;
 	}
 
@@ -121,8 +108,6 @@ namespace Blossom
 		}
 
 		m_Minimized = false;
-		Renderer::OnResize(e.GetWidth(), e.GetHeight());
-
 		return false;
 	}
 

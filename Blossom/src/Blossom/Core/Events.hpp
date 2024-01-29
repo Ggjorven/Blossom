@@ -5,7 +5,7 @@
 #include <functional>
 
 #define BIT(x) (1 << x)
-#define BL_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define Blossom_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace Blossom
 {

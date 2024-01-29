@@ -1,10 +1,8 @@
 #include "blpch.h"
-#include "OpenGLWindowsWindow.hpp"
+#include "WindowsWindow.hpp"
 
 #include "Blossom/Core/Events.hpp"
 #include "Blossom/Core/Logging.hpp"
-
-#include <GL/glew.h>
 
 namespace Blossom
 {
@@ -33,12 +31,11 @@ namespace Blossom
 
 	void WindowsWindow::OnRender()
 	{
-		glfwSwapBuffers(m_Window);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		glfwSwapInterval(enabled);
+		// TODO
 		m_Data.Vsync = enabled;
 	}
 
@@ -46,7 +43,7 @@ namespace Blossom
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());
 	}
-
+	
 	bool WindowsWindow::Init(WindowProperties properties)
 	{
 		//Setup
@@ -63,10 +60,7 @@ namespace Blossom
 		glfwSetErrorCallback(ErrorCallBack);
 
 		//Window creation
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-		 
+		//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		//if (!properties.Titlebar) glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
 		m_Data.Vsync = properties.VSync;
@@ -75,11 +69,6 @@ namespace Blossom
 		s_Instances++;
 
 		glfwSetWindowUserPointer(m_Window, &m_Data); //So we can access/get to the data in lambda functions
-
-		// Initialize OpenGL
-		glfwMakeContextCurrent(m_Window);
-		if (glewInit() != GLEW_OK) 
-			BL_LOG_FATAL("Failed to initialize glew!");
 
 		//Set window position
 		if (properties.CustomPos) glfwSetWindowPos(m_Window, properties.X, properties.Y);

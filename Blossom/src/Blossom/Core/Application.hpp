@@ -22,7 +22,7 @@ namespace Blossom
 		char** Args = nullptr;
 
 		AppInfo() = default;
-		AppInfo(int argc, char** argv) 
+		AppInfo(int argc, char** argv)
 			: ArgCount(argc), Args(argv) {}
 	};
 
@@ -64,11 +64,10 @@ namespace Blossom
 		bool m_Minimized = false;
 
 		LayerStack m_LayerStack;
+		BaseImGuiLayer* m_ImGuiLayer = nullptr;
 
 	private:
 		static Application* s_Instance;
-
-		BaseImGuiLayer* m_ImGuiLayer = nullptr;
 	};
 
 

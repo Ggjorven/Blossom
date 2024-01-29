@@ -3,17 +3,17 @@
 
 #include "CustomLayer.hpp"
 
-// Create your own application class
 class Sandbox : public Blossom::Application
 {
 public:
 	Sandbox(const Blossom::AppInfo& appInfo)
 		: Blossom::Application(appInfo)
 	{
-		// Add your own custom layers/overlays
 		AddLayer(new CustomLayer());
 	}
 };
+
+
 
 // ----------------------------------------------------------------
 //                    Set Application specs here...
