@@ -10,6 +10,7 @@ namespace Blossom
 {
 
 	VulkanRenderPass::VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments)
+		: m_ColourSpace(colourSpace), m_Attachments(attachments)
 	{
 		CreateRenderPass(extent, colourSpace, attachments);
 		CreateFrameBuffers(extent, colourSpace, attachments);
@@ -23,6 +24,16 @@ namespace Blossom
 			vkDestroyFramebuffer(info.Device, m_SwapChainFramebuffers[i], nullptr);
 
 		vkDestroyRenderPass(info.Device, m_RenderPass, nullptr);
+	}
+
+	void VulkanRenderPass::RecreateFrameBuffers()
+	{
+		VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
+
+		for (size_t i = 0; i < m_SwapChainFramebuffers.size(); i++)
+			vkDestroyFramebuffer(info.Device, m_SwapChainFramebuffers[i], nullptr);
+
+		CreateFrameBuffers({ VulkanManager::GetSwapChainInfo().SwapChainExtent.width, VulkanManager::GetSwapChainInfo().SwapChainExtent.height }, m_ColourSpace, m_Attachments);
 	}
 
 	void VulkanRenderPass::CreateRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments)

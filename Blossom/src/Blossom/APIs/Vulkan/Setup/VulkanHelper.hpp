@@ -49,4 +49,5 @@ namespace Blossom
 		static VkFormat FindDepthFormat();
 		static VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	};
+
 }

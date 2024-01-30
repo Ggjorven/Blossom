@@ -31,9 +31,6 @@ namespace Blossom
 
 		std::vector<VkImage> SwapChainImages = { };
 		std::vector<VkImageView> SwapChainImageViews = { };
-		std::vector<VkFramebuffer> SwapChainFramebuffers = { };
-
-		VkRenderPass RenderPass = VK_NULL_HANDLE;
 	};
 
 	struct VulkanResourceInfo

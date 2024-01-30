@@ -45,8 +45,12 @@ namespace Blossom
 		VulkanSwapChain& vc = *VulkanContext::Get()->GetSwapChain();
 
 		VulkanSwapChainInfo swapchainInfo = {};
-		
-		// ... TODO
+		swapchainInfo.SwapChain = vc.m_SwapChain;
+		swapchainInfo.SwapChainImageFormat = vc.m_SwapChainImageFormat;
+		swapchainInfo.SwapChainExtent = vc.m_SwapChainExtent;
+
+		swapchainInfo.SwapChainImages = vc.m_SwapChainImages;
+		swapchainInfo.SwapChainImageViews = vc.m_SwapChainImageViews;
 
 		s_Instance->m_SwapChainInfo = swapchainInfo;
 	}

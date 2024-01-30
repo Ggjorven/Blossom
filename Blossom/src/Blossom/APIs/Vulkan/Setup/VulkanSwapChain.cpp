@@ -5,6 +5,7 @@
 
 #include "Blossom/APIs/Vulkan/Setup/VulkanInstance.hpp"
 #include "Blossom/APIs/Vulkan/Setup/VulkanHelper.hpp"
+#include "Blossom/APIs/Vulkan/Setup/VulkanImageHelper.hpp"
 #include "Blossom/APIs/Vulkan/VulkanContext.hpp"
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
 
@@ -107,14 +108,10 @@ namespace Blossom
 
 	void VulkanSwapChain::CreateImageViews()
 	{
-		// TODO(Jorben): Implement the buffermanager function somewhere
-
-		//m_SwapChainImageViews.resize(m_SwapChainImages.size());
-		//
-		//for (size_t i = 0; i < m_SwapChainImages.size(); i++)
-		//{
-		//	m_SwapChainImageViews[i] = BufferManager::CreateImageView(m_SwapChainImages[i], m_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
-		//}
+		m_SwapChainImageViews.resize(m_SwapChainImages.size());
+		
+		for (size_t i = 0; i < m_SwapChainImages.size(); i++)
+			m_SwapChainImageViews[i] = VulkanImageHelper::CreateImageView(m_SwapChainImages[i], m_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 	}
 
 	void VulkanSwapChain::CleanUp()
