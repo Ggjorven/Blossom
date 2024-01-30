@@ -39,6 +39,8 @@ namespace Blossom
 	struct VulkanResourceInfo
 	{
 	public:
+		// TODO: ...
+		VkImageView DepthImageView = VK_NULL_HANDLE;
 	};
 
 

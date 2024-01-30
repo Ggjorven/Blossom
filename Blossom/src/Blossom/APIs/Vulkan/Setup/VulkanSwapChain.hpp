@@ -23,7 +23,6 @@ namespace Blossom
 	private:
 		void CreateSwapChain();
 		void CreateImageViews();
-		void CreateRenderPass();
 
 		void CleanUp();
 
@@ -36,11 +35,6 @@ namespace Blossom
 
 		std::vector<VkImage> m_SwapChainImages = { };
 		std::vector<VkImageView> m_SwapChainImageViews = { };
-		
-		// TODO(Jorben): Move to resource manager
-		//std::vector<VkFramebuffer> m_SwapChainFramebuffers = { };
-
-		VkRenderPass m_RenderPass = VK_NULL_HANDLE;
 
 		friend class VulkanManager;
 		friend class VulkanHelper;

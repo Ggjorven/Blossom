@@ -19,6 +19,7 @@ namespace Blossom
 		vc.RecreateSwapChain();
 
 		// TODO(Jorben): Recreate the depth and colour resources
+		// TODO(Jorben): Recreate the framebuffers (of renderpasses)
 	}
 
 	void VulkanManager::PopulateDeviceInfo()
