@@ -9,6 +9,10 @@
 namespace Blossom
 {
 
+	class Application;
+	class WindowsWindow;
+	class VulkanHelper;
+
 	enum class RenderingAPI
 	{
 		None = -1, OpenGL, Vulkan
@@ -29,10 +33,25 @@ namespace Blossom
 			Stencil = 0x8224
 		};
 
+		enum class ColourSpace
+		{
+			Unorm = 44,
+			sRGB = 50
+		};
+
 	public:
 		glm::vec4 ClearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 		MSAASamples MSAA = MSAASamples::None;
 		ClearValues ClearValues = ClearValues::Colour;
+		ColourSpace ColourSpace = ColourSpace::Unorm;
+
+	private:
+		// Needed for Vulkan SwapChain creation, // TODO(Jorben): Find a better way to create it.
+		bool VSync = false;
+
+		friend class Application;
+		friend class WindowsWindow;
+		friend class VulkanHelper;
 	};
 
 }

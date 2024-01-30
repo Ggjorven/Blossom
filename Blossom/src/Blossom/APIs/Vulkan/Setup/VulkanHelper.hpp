@@ -41,5 +41,12 @@ namespace Blossom
 		static bool PhysicalDeviceSuitable(VulkanInstance* instance, const VkPhysicalDevice& device);
 		static bool ExtensionsSupported(const VkPhysicalDevice& device);
 
+	public:
+		static VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+		static VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+		static VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		
+		static VkFormat FindDepthFormat();
+		static VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	};
 }

@@ -3,7 +3,13 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Blossom/Core/Application.hpp"
+#include "Blossom/Core/Logging.hpp"
+
+#include "Blossom/Renderer/Renderer.hpp"
+
 #include "Blossom/APIs/Vulkan/Setup/VulkanInstance.hpp"
+#include "Blossom/APIs/Vulkan/VulkanManager.hpp"
 
 namespace Blossom
 {
@@ -149,6 +155,78 @@ namespace Blossom
 
 		// Note(Jorben): It's empty if all the required extensions are available
 		return requiredExtensions.empty();
+	}
+
+	VkSurfaceFormatKHR VulkanHelper::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
+	{
+		for (const auto& availableFormat : availableFormats)
+		{
+			if (availableFormat.format == (VkFormat)((int)Renderer::GetAPISpecs().ColourSpace) && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+				return availableFormat;
+		}
+
+		// Note(Jorben): If nothing 100% satisfies our needs it okay to just go with the first one.
+		return availableFormats[0];
+	}
+
+	VkPresentModeKHR VulkanHelper::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+	{
+		for (const auto& availablePresentMode : availablePresentModes)
+		{
+			if (!Renderer::GetAPISpecs().VSync && (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR))
+				return availablePresentMode;
+
+			else if (Renderer::GetAPISpecs().VSync && availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+				return availablePresentMode;
+		}
+
+		return VK_PRESENT_MODE_FIFO_KHR;
+	}
+
+	VkExtent2D VulkanHelper::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+	{
+		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+			return capabilities.currentExtent;
+		else
+		{
+			auto handle = reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+			int width, height;
+			glfwGetFramebufferSize(handle, &width, &height);
+
+			VkExtent2D actualExtent =
+			{
+				static_cast<uint32_t>(width),
+				static_cast<uint32_t>(height)
+			};
+
+			actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+			actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+
+			return actualExtent;
+		}
+	}
+
+	VkFormat VulkanHelper::FindDepthFormat()
+	{
+		return FindSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+	}
+
+	VkFormat VulkanHelper::FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+	{
+		for (VkFormat format : candidates)
+		{
+			VkFormatProperties props;
+			vkGetPhysicalDeviceFormatProperties(VulkanManager::GetDeviceInfo().PhysicalDevice, format, &props);
+
+			if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
+				return format;
+			else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features)
+				return format;
+		}
+
+		BL_LOG_ERROR("Failed to find supported format!");
+		return VK_FORMAT_UNDEFINED;
 	}
 
 }

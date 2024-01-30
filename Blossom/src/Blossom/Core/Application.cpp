@@ -85,11 +85,12 @@ namespace Blossom
 		s_Instance = this;
 
 		Log::Init();
+		
+		appInfo.APISpecs.VSync = appInfo.WindowProperties.VSync;
+		Renderer::Init(appInfo.APISpecs);
 
 		m_Window = Window::Create(appInfo.WindowProperties);
 		m_Window->SetEventCallBack(BL_BIND_EVENT_FN(Application::OnEvent));
-
-		Renderer::Init(appInfo.APISpecs);
 
 		m_ImGuiLayer = BaseImGuiLayer::Create();
 		AddOverlay(m_ImGuiLayer);

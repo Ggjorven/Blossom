@@ -20,11 +20,16 @@ namespace Blossom
 
 	void VulkanContext::Init()
 	{
-		m_Instance = new VulkanInstance();
-		m_SwapChain = new VulkanSwapChain();
-		m_Resources = new VulkanResources();
-
 		VulkanManager::Init();
+
+		m_Instance = new VulkanInstance();
+		VulkanManager::PopulateDeviceInfo();
+
+		m_SwapChain = new VulkanSwapChain();
+		VulkanManager::PopulateSwapChainInfo();
+
+		m_Resources = new VulkanResources();
+		VulkanManager::PopulateResourceInfo();
 	}
 
 	void VulkanContext::Destroy()

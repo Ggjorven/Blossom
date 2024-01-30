@@ -20,7 +20,7 @@ namespace Blossom
 	{
 	public:
 		WindowProperties WindowProperties = {};
-		APISpecifications APISpecs = {};
+		mutable APISpecifications APISpecs = {};
 		int ArgCount = 0;
 		char** Args = nullptr;
 
@@ -71,6 +71,7 @@ namespace Blossom
 
 	private:
 		static Application* s_Instance;
+
 	};
 
 

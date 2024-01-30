@@ -37,6 +37,7 @@ namespace Blossom
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		Renderer::GetAPISpecs().VSync = true;
 		m_Data.Vsync = enabled;
 	}
 
