@@ -1,0 +1,154 @@
+#include "blpch.h"
+#include "VulkanHelper.hpp"
+
+#include <GLFW/glfw3.h>
+
+#include "Blossom/APIs/Vulkan/Setup/VulkanInstance.hpp"
+
+namespace Blossom
+{
+
+	VulkanHelper::QueueFamilyIndices VulkanHelper::QueueFamilyIndices::Find(VulkanInstance* instance, const VkPhysicalDevice& device)
+	{
+		VulkanHelper::QueueFamilyIndices indices;
+		
+		uint32_t queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+		
+		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+		
+		int32_t i = 0;
+		for (const auto& queueFamily : queueFamilies)
+		{
+			// Early exit check
+			if (indices.IsComplete())
+				break;
+		
+			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+				indices.GraphicsFamily = i;
+		
+			VkBool32 presentSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, instance->m_Surface, &presentSupport);
+			if (presentSupport)
+				indices.PresentFamily = i;
+		
+			i++;
+		}
+		
+		return indices;
+	}
+
+	VulkanHelper::SwapChainSupportDetails VulkanHelper::SwapChainSupportDetails::Query(VulkanInstance* instance, const VkPhysicalDevice& device)
+	{
+		VulkanHelper::SwapChainSupportDetails details;
+		
+		// Capabilities
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, instance->m_Surface, &details.Capabilities);
+		
+		// Formats
+		uint32_t formatCount;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, instance->m_Surface, &formatCount, nullptr);
+		
+		if (formatCount != 0)
+		{
+			details.Formats.resize((size_t)formatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, instance->m_Surface, &formatCount, details.Formats.data());
+		}
+		
+		// Presentation modes
+		uint32_t presentModeCount;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, instance->m_Surface, &presentModeCount, nullptr);
+		
+		if (presentModeCount != 0)
+		{
+			details.PresentModes.resize((size_t)presentModeCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, instance->m_Surface, &presentModeCount, details.PresentModes.data());
+		}
+		
+		return details;
+	}
+
+	bool VulkanHelper::ValidationLayersSupported()
+	{
+		uint32_t layerCount;
+		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+		std::vector<VkLayerProperties> availableLayers(layerCount);
+		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+		// Check if all requested layers are actually accessible 
+		for (const char* layerName : s_RequestedValidationLayers)
+		{
+			bool layerFound = false;
+
+			for (const auto& layerProperties : availableLayers)
+			{
+				if (strcmp(layerName, layerProperties.layerName) == 0)
+				{
+					layerFound = true;
+					break;
+				}
+			}
+
+			if (!layerFound)
+				return false;
+		}
+
+		return true;
+	}
+
+	std::vector<const char*> VulkanHelper::GetRequiredExtensions()
+	{
+		uint32_t glfwExtensionCount = 0;
+		const char** glfwExtensions;
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+		#if BL_VALIDATION_LAYERS
+		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		#endif
+
+		//extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME); // Note(Jorben): This line is needed for MacOS
+
+		return extensions;
+	}
+
+	bool VulkanHelper::PhysicalDeviceSuitable(VulkanInstance* instance, const VkPhysicalDevice& device)
+	{
+		QueueFamilyIndices indices = QueueFamilyIndices::Find(instance, device);
+
+		bool extensionsSupported = ExtensionsSupported(device);
+		bool swapChainAdequate = false;
+
+		if (extensionsSupported)
+		{
+			SwapChainSupportDetails swapChainSupport = SwapChainSupportDetails::Query(instance, device);
+			swapChainAdequate = !swapChainSupport.Formats.empty() && !swapChainSupport.PresentModes.empty();
+		}
+
+		VkPhysicalDeviceFeatures supportedFeatures;
+		vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
+		return indices.IsComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+	}
+
+	bool VulkanHelper::ExtensionsSupported(const VkPhysicalDevice& device)
+	{
+		uint32_t extensionCount;
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+		std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+		std::set<std::string> requiredExtensions(s_RequestedDeviceExtensions.begin(), s_RequestedDeviceExtensions.end());
+
+		for (const auto& extension : availableExtensions)
+			requiredExtensions.erase(extension.extensionName);
+
+		// Note(Jorben): It's empty if all the required extensions are available
+		return requiredExtensions.empty();
+	}
+
+}

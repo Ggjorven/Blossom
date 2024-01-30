@@ -16,6 +16,8 @@ namespace Blossom
 	class VulkanContext : public GraphicsContext
 	{
 	public:
+		inline static VulkanContext* Get() { return s_Instance; }
+
 		VulkanContext(GLFWwindow* handle);
 		virtual ~VulkanContext() = default;
 
@@ -24,15 +26,19 @@ namespace Blossom
 
 		void SwapBuffers() override;
 		
-		std::unique_ptr<VulkanInstance>& GetInstance() { return m_Instance; }
-		std::unique_ptr<VulkanSwapChain>& GetSwapChain() { return m_SwapChain; }
-		std::unique_ptr<VulkanResources>& GetResources() { return m_Resources; }
+		VulkanInstance*& GetInstance() { return m_Instance; }
+		VulkanSwapChain*& GetSwapChain() { return m_SwapChain; }
+		VulkanResources*& GetResources() { return m_Resources; }
+
+		GLFWwindow* GetWindowHandle() { return m_WindowHandle; }
 
 	private:
+		static VulkanContext* s_Instance;
+
 		GLFWwindow* m_WindowHandle = nullptr;
 
-		std::unique_ptr<VulkanInstance> m_Instance = nullptr;
-		std::unique_ptr<VulkanSwapChain> m_SwapChain = nullptr;
-		std::unique_ptr<VulkanResources> m_Resources = nullptr;
+		VulkanInstance* m_Instance = nullptr;
+		VulkanSwapChain* m_SwapChain = nullptr;
+		VulkanResources* m_Resources = nullptr;
 	};
 }
