@@ -53,7 +53,6 @@ project "Blossom"
 		"GLEW",
 		"GLFW",
 		"ImGui",
-		"spdlog",
 		"VMA"
 	}
 

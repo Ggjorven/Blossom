@@ -8,6 +8,7 @@
 void CustomLayer::OnAttach()
 {
 	Renderer::SetClearColour({ 1.0f, 0.0f, 0.0f, 0.0f });
+	BL_LOG_TRACE("Clear Colour: [{0:.2f}, {1:.2f}, {2:.2f}, {3:.2f}]", 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void CustomLayer::OnDetach()
