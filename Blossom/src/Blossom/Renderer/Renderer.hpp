@@ -10,6 +10,9 @@
 namespace Blossom
 {
 
+	typedef std::function<void()> RenderFunction;
+	typedef std::function<void()> UIFunction;
+
 	class Renderer
 	{
 	public:
@@ -23,6 +26,9 @@ namespace Blossom
 		static void SetClearColour(const glm::vec4& colour) { s_Instance->SetClearColourImpl(colour); }
 
 		static void UseController(const RenderController& controller) { s_Instance->UseControllerImpl(controller); }
+
+		static void AddToQueue(RenderFunction function) { s_Instance->AddToQueueImpl(function); }
+		static void AddToUIQueue(UIFunction function) { s_Instance->AddToUIQueueImpl(function); }
 
 		static void Display() { s_Instance->DisplayImpl(); }
 
@@ -38,6 +44,9 @@ namespace Blossom
 		virtual void UseControllerImpl(const RenderController& controller) = 0;
 
 		virtual void OnResizeImpl(uint32_t width, uint32_t height) = 0;
+
+		virtual void AddToQueueImpl(RenderFunction function) = 0;
+		virtual void AddToUIQueueImpl(UIFunction function) = 0;
 
 		virtual void DisplayImpl() = 0;
 

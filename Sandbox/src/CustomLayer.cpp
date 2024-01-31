@@ -26,9 +26,9 @@ void CustomLayer::OnRender()
 
 void CustomLayer::OnImGuiRender()
 {
-	//ImGui::Begin("Example window");
-	//
-	//ImGui::End();
+	ImGui::Begin("Example window");
+	
+	ImGui::End();
 }
 
 void CustomLayer::OnEvent(Event& e)

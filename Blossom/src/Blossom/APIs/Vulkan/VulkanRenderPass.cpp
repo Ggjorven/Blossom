@@ -21,6 +21,18 @@ namespace Blossom
 	{
 	}
 
+	VulkanRenderPass::VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments, std::vector<VkFramebuffer>& framebuffers)
+		: m_ColourSpace(colourSpace), m_Attachments(attachments)
+	{
+		CreateRenderPass(extent, colourSpace, attachments);
+		m_SwapChainFramebuffers = framebuffers;
+	}
+
+	VulkanRenderPass::VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, int attachments, std::vector<VkFramebuffer>& framebuffers)
+		: VulkanRenderPass(extent, colourSpace, (Attachments)attachments, framebuffers)
+	{
+	}
+
 	VulkanRenderPass::~VulkanRenderPass()
 	{
 		VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();

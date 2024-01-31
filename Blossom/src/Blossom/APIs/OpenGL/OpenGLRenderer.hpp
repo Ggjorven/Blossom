@@ -1,5 +1,7 @@
 #pragma once
 
+#include <queue>
+
 #include "Blossom/Renderer/Renderer.hpp"
 	
 namespace Blossom
@@ -19,7 +21,13 @@ namespace Blossom
 
 		void OnResizeImpl(uint32_t width, uint32_t height) override {}
 
-		void DisplayImpl() override {}
+		void AddToQueueImpl(RenderFunction function) override;
+		void AddToUIQueueImpl(UIFunction function) override;
+
+		void DisplayImpl() override;
+
+	private:
+		std::queue<RenderFunction> m_RenderFunctions = { };
 	};
 
 }

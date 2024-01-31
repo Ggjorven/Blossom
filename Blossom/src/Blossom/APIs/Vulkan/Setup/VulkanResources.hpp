@@ -43,7 +43,7 @@ namespace Blossom
 		std::vector<VkSemaphore> m_RenderFinishedSemaphores = { };
 		std::vector<VkFence> m_InFlightFences = { };
 
-		// All renderpasses // TODO(Jorben): Have a better system
+		// All renderpasses
 		std::vector<VulkanRenderPass*> m_RenderPasses = { };
 
 		// Colour and render images.

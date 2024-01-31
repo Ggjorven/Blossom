@@ -2,6 +2,8 @@
 
 #include "Blossom/ImGui/BaseImGuiLayer.hpp"
 
+#include <vulkan/vulkan.h>
+
 namespace Blossom
 {
 
@@ -16,6 +18,12 @@ namespace Blossom
 
 		void Begin() override;
 		void End() override;
+
+	private:
+		void CreateDescriptorPool();
+
+	private:
+		VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
 	};
 
 }

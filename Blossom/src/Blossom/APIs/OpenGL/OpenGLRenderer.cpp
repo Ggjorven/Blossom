@@ -21,4 +21,24 @@ namespace Blossom
 	{
 	}
 
+	void OpenGLRenderer::AddToQueueImpl(RenderFunction function)
+	{
+		m_RenderFunctions.push(function);
+	}
+
+	void OpenGLRenderer::AddToUIQueueImpl(UIFunction function)
+	{
+		// Note(Jorben): This method is irrelevant for OpenGL compared to Vulkan
+	}
+
+	void OpenGLRenderer::DisplayImpl()
+	{
+		while (!m_RenderFunctions.empty())
+		{
+			auto& func = m_RenderFunctions.front();
+			func();
+			m_RenderFunctions.pop();
+		}
+	}
+
 }

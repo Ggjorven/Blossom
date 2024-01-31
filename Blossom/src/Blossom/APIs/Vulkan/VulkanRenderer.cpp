@@ -10,8 +10,12 @@
 namespace Blossom
 {
 
+	VulkanRenderer* VulkanRenderer::s_Instance = nullptr;
+
 	VulkanRenderer::VulkanRenderer()
 	{
+		s_Instance = this;
+
 		VulkanSwapChainInfo& info = VulkanManager::GetSwapChainInfo();
 
 		m_DefaultRenderPass = new VulkanRenderPass({ info.SwapChainExtent.width, info.SwapChainExtent.height }, VulkanRenderPass::ColourSpace::Unorm, ColourAttachment | DepthAttachment);
@@ -21,6 +25,8 @@ namespace Blossom
 	VulkanRenderer::~VulkanRenderer()
 	{
 		delete m_DefaultRenderPass;
+
+		s_Instance = nullptr;
 	}
 
 	void VulkanRenderer::ClearImpl()
@@ -40,6 +46,16 @@ namespace Blossom
 	void VulkanRenderer::OnResizeImpl(uint32_t width, uint32_t height)
 	{
 		VulkanManager::RecreateSwapChain();
+	}
+
+	void VulkanRenderer::AddToQueueImpl(RenderFunction function)
+	{
+		m_RenderQueue.push(function);
+	}
+
+	void VulkanRenderer::AddToUIQueueImpl(UIFunction function)
+	{
+		m_UIQueue.push(function);
 	}
 
 	void VulkanRenderer::DisplayImpl()
@@ -170,12 +186,19 @@ namespace Blossom
 		scissor.extent = swapchainInfo.SwapChainExtent;
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-		// Run the queue of commands
-		//for (auto& func : m_RenderQueue)
-		//	func(commandBuffer, imageIndex);
-		//
-		//for (auto& func : m_UIQueue)
-		//	func(commandBuffer);
+		// Execute all commands
+		while (!m_RenderQueue.empty())
+		{
+			auto& func = m_RenderQueue.front();
+			func();
+			m_RenderQueue.pop();
+		}
+		while (!m_UIQueue.empty())
+		{
+			auto& func = m_UIQueue.front();
+			func();
+			m_UIQueue.pop();
+		}
 
 		vkCmdEndRenderPass(commandBuffer);
 

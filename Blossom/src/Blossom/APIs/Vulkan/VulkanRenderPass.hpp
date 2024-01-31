@@ -14,6 +14,7 @@ namespace Blossom
 {
 
 	class VulkanRenderer;
+	class VulkanImGuiLayer;
 
 	enum Attachments
 	{
@@ -35,6 +36,9 @@ namespace Blossom
 	public:
 		VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments);
 		VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, int attachments);
+
+		VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments, std::vector<VkFramebuffer>& framebuffers);
+		VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, int attachments, std::vector<VkFramebuffer>& framebuffers);
 		virtual ~VulkanRenderPass();
 
 		void RecreateFrameBuffers();
@@ -53,6 +57,7 @@ namespace Blossom
 		std::vector<VkFramebuffer> m_SwapChainFramebuffers = { };
 
 		friend class VulkanRenderer;
+		friend class VulkanImGuiLayer;
 	};
 
 }
