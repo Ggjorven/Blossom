@@ -1,7 +1,6 @@
 project "GLEW"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++20"
 
     architecture "x86_64"
 	
@@ -33,34 +32,19 @@ project "GLEW"
 
 	filter "system:windows"
 		systemversion "latest"
+		cppdialect "C++20"
 		staticruntime "On"
 
 	filter "system:linux"
 		pic "On"
 		systemversion "latest"
+		cppdialect "C++20"
 		staticruntime "On"
 
-	filter "configurations:Vulkan-Debug"
+	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:OpenGL-Debug"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Vulkan-Release"
+	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
-
-	filter "configurations:OpenGL-Release"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Vulkan-Dist"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:OpenGL-Dist"
-		runtime "Release"
-		optimize "on"
-

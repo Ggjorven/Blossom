@@ -27,7 +27,3 @@
 #ifdef BL_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif
-
-#if !defined(BL_EXPOSE_VULKAN) && !defined(BL_EXPOSE_OPENGL) 
-	#error No API exposed! Example: "BL_EXPOSE_VULKAN" or "BL_EXPOSE_OPENGL"
-#endif

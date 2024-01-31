@@ -85,26 +85,10 @@ filter "system:windows"
 
     }
 
-	filter "configurations:Vulkan-Debug"
+	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:OpenGL-Debug"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Vulkan-Release"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:OpenGL-Release"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Vulkan-Dist"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:OpenGL-Dist"
+	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"

@@ -1,9 +1,20 @@
 #pragma once
 
-#if defined(BL_EXPOSE_VULKAN)
-#include "APIs/Vulkan/ImGui/VulkanBaseImGuiLayer.hpp"
+#include "Blossom/Core/Layer.hpp"
 
-#elif defined(BL_EXPOSE_OPENGL)
-#include "APIs/OpenGL/ImGui/OpenGLBaseImGuiLayer.hpp"
+namespace Blossom
+{
 
-#endif
+	class BaseImGuiLayer : public Layer
+	{
+	public:
+		BaseImGuiLayer() = default;
+		virtual ~BaseImGuiLayer() = default;
+
+		virtual void Begin() = 0;
+		virtual void End() = 0;
+
+		static BaseImGuiLayer* Create();
+	};
+
+}

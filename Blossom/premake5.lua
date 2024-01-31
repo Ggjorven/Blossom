@@ -14,31 +14,9 @@ project "Blossom"
 
 	files
 	{
-		"src/Blossom/*.h",
-		"src/Blossom/*.hpp",
-		"src/Blossom/*.cpp",
-
-		"src/Blossom/APIs/APIBuild.cpp",
-
-		"src/Blossom/Core/**.h",
-		"src/Blossom/Core/**.hpp",
-		"src/Blossom/Core/**.cpp",
-
-		"src/Blossom/ImGui/**.h",
-		"src/Blossom/ImGui/**.hpp",
-		"src/Blossom/ImGui/**.cpp",
-
-		"src/Blossom/Platforms/**.h",
-		"src/Blossom/Platforms/**.hpp",
-		"src/Blossom/Platforms/**.cpp",
-
-		"src/Blossom/Renderer/**.h",
-		"src/Blossom/Renderer/**.hpp",
-		"src/Blossom/Renderer/**.cpp",
-
-		"src/Blossom/Utils/**.h",
-		"src/Blossom/Utils/**.hpp",
-		"src/Blossom/Utils/**.cpp",
+		"src/**.h",
+		"src/**.hpp",
+		"src/**.cpp",
 		
 		"%{wks.location}/vendor/stb_image/src/stb_image.cpp"
 	}
@@ -46,7 +24,9 @@ project "Blossom"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE",
 		"GLEW_STATIC"
+		-- "ASSIMP_BUILD_STATIC_LIB"
 	}
 
 	includedirs
@@ -73,7 +53,6 @@ project "Blossom"
 		"GLEW",
 		"GLFW",
 		"ImGui",
-		"spdlog",
 		"VMA"
 	}
 
@@ -92,97 +71,34 @@ project "Blossom"
 			"BL_PLATFORM_WINDOWS"
 		}
 
-	filter "configurations:Vulkan-Debug"
-		defines 
-		{
-			"BL_DEBUG",
-			"GLFW_INCLUDE_VULKAN",
-			"BL_EXPOSE_VULKAN"
-		}
+	filter "configurations:Debug"
+		defines "BL_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:OpenGL-Debug"
-		defines 
-		{
-			"BL_DEBUG",
-			"GLFW_INCLUDE_NONE",
-			"BL_EXPOSE_OPENGL"
-		}
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Vulkan-Release"
-		defines 
-		{
-			"BL_RELEASE",
-			"GLFW_INCLUDE_VULKAN",
-			"BL_EXPOSE_VULKAN"
-		}
+	filter "configurations:Release"
+		defines "BL_RELEASE"
 		runtime "Release"
 		optimize "on"
 
-	filter "configurations:OpenGL-Release"
-		defines 
-		{
-			"BL_RELEASE",
-			"GLFW_INCLUDE_NONE",
-			"BL_EXPOSE_OPENGL"
-		}
+	filter "configurations:Dist"
+		defines "BL_DIST"
 		runtime "Release"
 		optimize "on"
 
-	filter "configurations:Vulkan-Dist"
-		defines 
-		{
-			"BL_DIST",
-			"GLFW_INCLUDE_VULKAN",
-			"BL_EXPOSE_VULKAN"
-		}
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:OpenGL-Dist"
-		defines 
-		{
-			"BL_DIST",
-			"GLFW_INCLUDE_NONE",
-			"BL_EXPOSE_OPENGL"
-		}
-		runtime "Release"
-		optimize "on"
-
-	filter { "system:windows", "configurations:Vulkan-Debug" }
+	filter { "system:windows", "configurations:Debug" }
 		links
 		{
 			"%{wks.location}/vendor/assimp/bin/windows/Debug/assimp-vc143-mtd.lib"
 		}
 
-	filter { "system:windows", "configurations:OpenGL-Debug" }
-		links
-		{
-			"%{wks.location}/vendor/assimp/bin/windows/Debug/assimp-vc143-mtd.lib"
-		}
-
-	filter { "system:windows", "configurations:Vulkan-Release" }
+	filter { "system:windows", "configurations:Release" }
 		links
 		{
 			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"
 		}
 
-	filter { "system:windows", "configurations:OpenGL-Release" }
-		links
-		{
-			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"
-		}
-
-	filter { "system:windows", "configurations:Vulkan-Dist" }
-		links
-		{
-			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"
-		}
-
-	filter { "system:windows", "configurations:OpenGL-Dist" }
+	filter { "system:windows", "configurations:Dist" }
 		links
 		{
 			"%{wks.location}/vendor/assimp/bin/windows/Release/assimp-vc143-mt.lib"

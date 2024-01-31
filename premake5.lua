@@ -6,12 +6,9 @@ workspace "Blossom"
 
 	configurations
 	{
-		"Vulkan-Debug",
-		"Vulkan-Release",
-		"Vulkan-Dist",
-		"OpenGL-Debug",
-		"OpenGL-Release",
-		"OpenGL-Dist"
+		"Debug",
+		"Release",
+		"Dist"
 	}
 
 	flags
@@ -25,7 +22,6 @@ group "Additional Dependencies"
 	include "vendor/GLEW"
 	include "vendor/GLFW"
 	include "vendor/ImGui"
-	include "vendor/spdlog"
 	include "vendor/VulkanMemoryAllocator"
 group ""
 

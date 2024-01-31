@@ -4,7 +4,8 @@
 #include <sstream>
 #include <functional>
 
-#define BIT(x) (1 << x)
+#include "Blossom/Utils/Utils.hpp"
+
 #define BL_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace Blossom
