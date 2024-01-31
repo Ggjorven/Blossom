@@ -11,11 +11,8 @@ public:
 	void OnDetach() override;
 
 	void OnUpdate(float deltaTime) override;
-	void OnRender() override;
+	void OnRender();
 	void OnImGuiRender() override;
 
-	void OnEvent(Event& e) override;
-
-private:
-
+	void OnEvent(Event& e);
 };

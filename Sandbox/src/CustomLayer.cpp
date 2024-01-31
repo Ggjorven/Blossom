@@ -1,11 +1,14 @@
 #include "CustomLayer.hpp"
 
-#include <GL/glew.h>
+#include <Blossom/Core/Logging.hpp>
+#include <Blossom/Renderer/Renderer.hpp>
 
 #include <imgui.h>
 
 void CustomLayer::OnAttach()
 {
+	Renderer::SetClearColour({ 1.0f, 0.0f, 0.0f, 0.0f });
+	BL_LOG_TRACE("Clear Colour: [{0:.2f}, {1:.2f}, {2:.2f}, {3:.2f}]", 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void CustomLayer::OnDetach()
@@ -18,18 +21,13 @@ void CustomLayer::OnUpdate(float deltaTime)
 
 void CustomLayer::OnRender()
 {
-	#if defined(BL_EXPOSE_OPENGL)
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	#elif defined(BL_EXPOSE_VULKAN)
-
-	#endif
+	Renderer::Clear();
 }
 
 void CustomLayer::OnImGuiRender()
 {
-	ImGui::Begin("AA");
-
+	ImGui::Begin("Example window");
+	
 	ImGui::End();
 }
 

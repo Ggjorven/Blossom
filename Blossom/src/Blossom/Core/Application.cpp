@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Blossom/Core/Logging.hpp"
-
 #include "Blossom/Renderer/Renderer.hpp"
 
 namespace Blossom
@@ -48,16 +47,15 @@ namespace Blossom
 	{
 		while (m_Running)
 		{
-			//Delta Time
+			// Delta Time
 			float currentTime = (float)glfwGetTime();
 			static float lastTime = 0.0f;
 
 			float deltaTime = currentTime - lastTime;
 			lastTime = currentTime;
 
-			//Update & Render
+			// Update & Render
 			m_Window->OnUpdate();
-			//ProcessEvents();
 
 			for (Layer* layer : m_LayerStack)
 			{
@@ -65,13 +63,10 @@ namespace Blossom
 				layer->OnRender();
 			}
 
-			if (m_ImGuiLayer)
-			{
-				m_ImGuiLayer->Begin();
-				for (Layer* layer : m_LayerStack)
-					layer->OnImGuiRender();
-				m_ImGuiLayer->End();
-			}
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
 			Renderer::Display();
 
@@ -94,21 +89,19 @@ namespace Blossom
 		s_Instance = this;
 
 		Log::Init();
-
+		
 		m_Window = Window::Create(appInfo.WindowProperties);
 		m_Window->SetEventCallBack(BL_BIND_EVENT_FN(Application::OnEvent));
 
-		Renderer::Init();
+		Renderer::Init(appInfo.APISpecs);
 
-		//Add ImGui
-		m_ImGuiLayer = new BaseImGuiLayer();
+		m_ImGuiLayer = BaseImGuiLayer::Create();
 		AddOverlay(m_ImGuiLayer);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
-
 		return false;
 	}
 
@@ -120,9 +113,8 @@ namespace Blossom
 			return true;
 		}
 
-		m_Minimized = false;
 		Renderer::OnResize(e.GetWidth(), e.GetHeight());
-
+		m_Minimized = false;
 		return false;
 	}
 

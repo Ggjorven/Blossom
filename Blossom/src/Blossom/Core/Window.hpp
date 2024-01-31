@@ -17,7 +17,7 @@ namespace Blossom
 		uint32_t Width;
 		uint32_t Height;
 
-		bool Titlebar = true;
+		//bool Titlebar = true; // TODO(Jorben): Implement using an updated GLFW branch
 		bool VSync = true;
 
 		bool CustomPos = false;
