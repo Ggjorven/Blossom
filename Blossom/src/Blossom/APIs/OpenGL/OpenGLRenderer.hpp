@@ -18,6 +18,8 @@ namespace Blossom
 		void UseControllerImpl(const RenderController& controller) override;
 
 		void OnResizeImpl(uint32_t width, uint32_t height) override {}
+
+		void DisplayImpl() override {}
 	};
 
 }

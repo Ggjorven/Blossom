@@ -8,6 +8,10 @@
 namespace Blossom
 {
 
+	class VulkanInstance;
+	class VulkanSwapChain;
+	class VulkanResources;
+
 	struct VulkanDeviceInfo
 	{
 	public:
@@ -36,7 +40,15 @@ namespace Blossom
 	struct VulkanResourceInfo
 	{
 	public:
-		// TODO: ...
+		VkCommandPool CommandPool = VK_NULL_HANDLE;
+		std::vector<VkCommandBuffer> CommandBuffers = { };
+
+		std::vector<VkSemaphore> ImageAvailableSemaphores = { };
+		std::vector<VkSemaphore> RenderFinishedSemaphores = { };
+		std::vector<VkFence> InFlightFences = { };
+
+		VkImage DepthImage = VK_NULL_HANDLE;
+		VkDeviceMemory DepthImageMemory = VK_NULL_HANDLE;
 		VkImageView DepthImageView = VK_NULL_HANDLE;
 	};
 
@@ -59,6 +71,10 @@ namespace Blossom
 		static void PopulateDeviceInfo();
 		static void PopulateSwapChainInfo();
 		static void PopulateResourceInfo();
+
+		static void PopulateDeviceInfo(VulkanInstance* obj);
+		static void PopulateSwapChainInfo(VulkanSwapChain* obj);
+		static void PopulateResourceInfo(VulkanResources* obj);
 
 	private:
 		VulkanDeviceInfo m_DeviceInfo = {};

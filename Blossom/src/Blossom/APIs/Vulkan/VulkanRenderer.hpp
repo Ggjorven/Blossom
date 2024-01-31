@@ -21,7 +21,15 @@ namespace Blossom
 
 		void OnResizeImpl(uint32_t width, uint32_t height) override;
 
+		void DisplayImpl() override;
+
 	private:
+		void QueuePresent();
+		void RecordCommandBuffer(VkCommandBuffer& commandBuffer, uint32_t imageIndex);
+
+	private:
+		uint32_t m_CurrentFrame = 0;
+
 		VulkanRenderPass* m_DefaultRenderPass;
 	};
 

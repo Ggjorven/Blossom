@@ -16,8 +16,6 @@ namespace Blossom
 		VulkanSwapChain();
 		virtual ~VulkanSwapChain();
 
-		void FinishSwapChainCreation();
-
 		void RecreateSwapChain();
 
 	private:

@@ -68,6 +68,8 @@ namespace Blossom
 				layer->OnImGuiRender();
 			m_ImGuiLayer->End();
 
+			Renderer::Display();
+
 			m_Window->OnRender();
 		}
 	}

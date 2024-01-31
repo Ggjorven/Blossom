@@ -25,6 +25,8 @@ namespace Blossom
 	{
 		VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
 
+		vkDeviceWaitIdle(info.Device);
+
 		for (size_t i = 0; i < m_SwapChainFramebuffers.size(); i++)
 			vkDestroyFramebuffer(info.Device, m_SwapChainFramebuffers[i], nullptr);
 

@@ -2,6 +2,9 @@
 #include "VulkanManager.hpp"
 
 #include "Blossom/APIs/Vulkan/VulkanContext.hpp"
+#include "Blossom/APIs/Vulkan/Setup/VulkanInstance.hpp"
+#include "Blossom/APIs/Vulkan/Setup/VulkanSwapChain.hpp"
+#include "Blossom/APIs/Vulkan/Setup/VulkanResources.hpp"
 
 namespace Blossom
 {
@@ -18,14 +21,30 @@ namespace Blossom
 		VulkanSwapChain& vc = *VulkanContext::Get()->GetSwapChain();
 		vc.RecreateSwapChain();
 
+		auto& resources = *VulkanContext::Get()->GetResources();
 		// TODO(Jorben): Recreate the depth and colour resources
-		// TODO(Jorben): Recreate the framebuffers (of renderpasses)
+		resources.RecreateFramebuffers();
 	}
 
 	void VulkanManager::PopulateDeviceInfo()
 	{
-		VulkanInstance& vc = *VulkanContext::Get()->GetInstance();
-		
+		PopulateDeviceInfo(VulkanContext::Get()->GetInstance());
+	}
+
+	void VulkanManager::PopulateSwapChainInfo()
+	{
+		PopulateSwapChainInfo(VulkanContext::Get()->GetSwapChain());
+	}
+
+	void VulkanManager::PopulateResourceInfo()
+	{
+		PopulateResourceInfo(VulkanContext::Get()->GetResources());
+	}
+
+	void VulkanManager::PopulateDeviceInfo(VulkanInstance* obj)
+	{
+		VulkanInstance& vc = *obj;
+
 		VulkanDeviceInfo deviceInfo = {};
 		deviceInfo.Instance = vc.m_Instance;
 		deviceInfo.DebugMessenger = vc.m_DebugMessenger;
@@ -40,9 +59,9 @@ namespace Blossom
 		s_Instance->m_DeviceInfo = deviceInfo;
 	}
 
-	void VulkanManager::PopulateSwapChainInfo()
+	void VulkanManager::PopulateSwapChainInfo(VulkanSwapChain* obj)
 	{
-		VulkanSwapChain& vc = *VulkanContext::Get()->GetSwapChain();
+		VulkanSwapChain& vc = *obj;
 
 		VulkanSwapChainInfo swapchainInfo = {};
 		swapchainInfo.SwapChain = vc.m_SwapChain;
@@ -55,8 +74,23 @@ namespace Blossom
 		s_Instance->m_SwapChainInfo = swapchainInfo;
 	}
 
-	void VulkanManager::PopulateResourceInfo()
+	void VulkanManager::PopulateResourceInfo(VulkanResources* obj)
 	{
+		VulkanResources& vc = *obj;
+
+		VulkanResourceInfo resourceInfo = {};
+		resourceInfo.CommandPool = vc.m_CommandPool;
+		resourceInfo.CommandBuffers = vc.m_CommandBuffers;
+
+		resourceInfo.ImageAvailableSemaphores = vc.m_ImageAvailableSemaphores;
+		resourceInfo.RenderFinishedSemaphores = vc.m_RenderFinishedSemaphores;
+		resourceInfo.InFlightFences = vc.m_InFlightFences;
+
+		resourceInfo.DepthImage = vc.m_DepthImage;
+		resourceInfo.DepthImageMemory = vc.m_DepthImageMemory;
+		resourceInfo.DepthImageView = vc.m_DepthImageView;
+
+		s_Instance->m_ResourceInfo = resourceInfo;
 	}
 
 }

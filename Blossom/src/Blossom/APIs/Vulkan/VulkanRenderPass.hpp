@@ -13,6 +13,8 @@
 namespace Blossom
 {
 
+	class VulkanRenderer;
+
 	enum Attachments
 	{
 		AttachmentNone = 0,
@@ -37,6 +39,8 @@ namespace Blossom
 
 		void RecreateFrameBuffers();
 
+		bool HasDepth() const { return m_Attachments & DepthAttachment; }
+
 	private:
 		void CreateRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments);
 		void CreateFrameBuffers(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments);
@@ -48,6 +52,7 @@ namespace Blossom
 		VkRenderPass m_RenderPass = VK_NULL_HANDLE;
 		std::vector<VkFramebuffer> m_SwapChainFramebuffers = { };
 
+		friend class VulkanRenderer;
 	};
 
 }

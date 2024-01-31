@@ -22,6 +22,9 @@ namespace Blossom
 
 		void AddRenderPass(VulkanRenderPass* renderpass);
 
+		std::vector<VulkanRenderPass*>& GetRenderPasses() { return m_RenderPasses; }
+
+		void RecreateDepthResources();
 		void RecreateFramebuffers();
 
 	private:
@@ -29,9 +32,9 @@ namespace Blossom
 		void CreateCommandBuffers();
 		void CreateSyncObjects();
 
-	private:
-		uint32_t m_CurrentFrame = 0;
+		void CreateDepthResources();
 
+	private:
 		VkCommandPool m_CommandPool = VK_NULL_HANDLE;
 		std::vector<VkCommandBuffer> m_CommandBuffers = { };
 
@@ -42,6 +45,11 @@ namespace Blossom
 
 		// All renderpasses // TODO(Jorben): Have a better system
 		std::vector<VulkanRenderPass*> m_RenderPasses = { };
+
+		// Colour and render images.
+		VkImage m_DepthImage = VK_NULL_HANDLE;
+		VkDeviceMemory m_DepthImageMemory = VK_NULL_HANDLE;
+		VkImageView m_DepthImageView = VK_NULL_HANDLE;
 
 		friend class VulkanManager;
 		friend class VulkanHelper;

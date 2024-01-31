@@ -24,6 +24,8 @@ namespace Blossom
 
 		static void UseController(const RenderController& controller) { s_Instance->UseControllerImpl(controller); }
 
+		static void Display() { s_Instance->DisplayImpl(); }
+
 		static RenderingAPI GetAPI() { return s_API; }
 		static APISpecifications& GetAPISpecs() { return s_APISpecs; }
 
@@ -36,6 +38,8 @@ namespace Blossom
 		virtual void UseControllerImpl(const RenderController& controller) = 0;
 
 		virtual void OnResizeImpl(uint32_t width, uint32_t height) = 0;
+
+		virtual void DisplayImpl() = 0;
 
 	private:
 		static Renderer* s_Instance;

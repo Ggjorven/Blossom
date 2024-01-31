@@ -6,6 +6,7 @@
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
 #include "Blossom/APIs/Vulkan/VulkanContext.hpp"
 #include "Blossom/APIs/Vulkan/Setup/VulkanHelper.hpp"
+#include "Blossom/APIs/Vulkan/Setup/VulkanImageHelper.hpp"
 
 namespace Blossom
 {
@@ -15,11 +16,21 @@ namespace Blossom
         CreateCommandPool();
         CreateCommandBuffers();
         CreateSyncObjects();
+
+        VulkanManager::PopulateResourceInfo(this);
+        CreateDepthResources();
     }
 
     VulkanResources::~VulkanResources()
     {
         VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
+
+        vkDeviceWaitIdle(info.Device);
+
+        // Cleanup depth resources
+        vkDestroyImageView(info.Device, m_DepthImageView, nullptr);
+        vkDestroyImage(info.Device, m_DepthImage, nullptr);
+        vkFreeMemory(info.Device, m_DepthImageMemory, nullptr);
 
         for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++)
         {
@@ -41,9 +52,22 @@ namespace Blossom
         m_RenderPasses.push_back(renderpass);
     }
 
+    void VulkanResources::RecreateDepthResources()
+    {
+        VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
+
+        // Cleanup depth resources
+        vkDestroyImageView(info.Device, m_DepthImageView, nullptr);
+        vkDestroyImage(info.Device, m_DepthImage, nullptr);
+        vkFreeMemory(info.Device, m_DepthImageMemory, nullptr);
+
+        CreateDepthResources();
+    }
+
     void VulkanResources::RecreateFramebuffers()
     {
-        // ... TODO for loop all renderpasses recreate
+        for (auto renderpass : m_RenderPasses)
+            renderpass->RecreateFrameBuffers();
     }
 
     void VulkanResources::CreateCommandPool()
@@ -101,6 +125,19 @@ namespace Blossom
                 BL_LOG_ERROR("Failed to create synchronization objects for a frame!");
             }
         }
+    }
+
+    void VulkanResources::CreateDepthResources()
+    {
+        VulkanSwapChainInfo& info = VulkanManager::GetSwapChainInfo();
+
+        VkFormat depthFormat = VulkanHelper::FindDepthFormat();
+
+        VulkanImageHelper::CreateImage(info.SwapChainExtent.width, info.SwapChainExtent.height, 1, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_DepthImage, m_DepthImageMemory);
+
+        m_DepthImageView = VulkanImageHelper::CreateImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
+
+        VulkanImageHelper::TransitionImageLayout(m_DepthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1);
     }
 
 }

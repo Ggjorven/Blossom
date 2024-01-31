@@ -37,7 +37,9 @@ namespace Blossom
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		// TODO(Jorben): Renderer recreate (for vulkan)
+		// Note(Jorben): We resize cause resize recreates the swapchain
+		Renderer::OnResize(GetWidth(), GetHeight());
+
 		m_Data.Vsync = enabled;
 	}
 

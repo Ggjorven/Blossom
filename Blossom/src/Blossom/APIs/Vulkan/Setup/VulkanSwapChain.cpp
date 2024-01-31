@@ -19,7 +19,7 @@ namespace Blossom
 		s_Instance = this;
 
 		CreateSwapChain();
-		// ...
+		CreateImageViews();
 	}
 
 	VulkanSwapChain::~VulkanSwapChain()
@@ -29,17 +29,14 @@ namespace Blossom
 		s_Instance = nullptr;
 	}
 
-	void VulkanSwapChain::FinishSwapChainCreation()
-	{
-		//CreateFramebuffers();
-	}
-
 	void VulkanSwapChain::RecreateSwapChain()
 	{
 		CleanUp();
 
 		CreateSwapChain();
-		// ...
+		CreateImageViews();
+
+		VulkanManager::PopulateSwapChainInfo();
 	}
 
 	void VulkanSwapChain::CreateSwapChain()

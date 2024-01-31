@@ -25,7 +25,5 @@ Blossom::Application* Blossom::CreateApplication(int argc, char* argv[])
 	appInfo.WindowProperties.Name = "Custom";
 	appInfo.WindowProperties.VSync = false;
 
-	// ... 
-
 	return new Sandbox(appInfo);
 }
