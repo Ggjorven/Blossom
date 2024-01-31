@@ -9,7 +9,7 @@
 namespace Blossom
 {
 
-	std::unique_ptr<Renderer> Renderer::s_Instance = nullptr;
+	Renderer* Renderer::s_Instance = nullptr;
 	RenderingAPI Renderer::s_API = RenderingAPI::Vulkan; // Note(Jorben): This is where the API is selected.
 	APISpecifications Renderer::s_APISpecs = {};
 
@@ -20,16 +20,21 @@ namespace Blossom
 		switch (s_API)
 		{
 		case RenderingAPI::OpenGL:
-			s_Instance = std::make_unique<OpenGLRenderer>();
+			s_Instance = new OpenGLRenderer();
 			break;
 		case RenderingAPI::Vulkan:
-			s_Instance = std::make_unique<VulkanRenderer>();
+			s_Instance = new VulkanRenderer();
 			break;
 
 		default:
 			BL_LOG_ERROR("Unknown Renderer::API selected.");
 			break;
 		}
+	}
+
+	void Renderer::Destroy()
+	{
+		delete s_Instance;
 	}
 
 }

@@ -10,6 +10,7 @@
 
 #include "Blossom/APIs/Vulkan/Setup/VulkanInstance.hpp"
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
+#include "Blossom/APIs/Vulkan/VulkanContext.hpp"
 
 namespace Blossom
 {
@@ -171,15 +172,26 @@ namespace Blossom
 
 	VkPresentModeKHR VulkanHelper::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
 	{
+		static bool first = true;
+
 		for (const auto& availablePresentMode : availablePresentModes)
 		{
-			if (!Renderer::GetAPISpecs().VSync && (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR))
-				return availablePresentMode;
+			bool vsync = (first ? VulkanContext::Get()->m_CreationVSync : Application::Get().GetWindow().IsVSync());
 
-			else if (Renderer::GetAPISpecs().VSync && availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+			if (!vsync && (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR))
+			{
+				first = false;
 				return availablePresentMode;
+			}
+
+			else if (vsync && availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+			{
+				first = false;
+				return availablePresentMode;
+			}
 		}
 
+		first = false;
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
 

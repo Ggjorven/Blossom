@@ -13,6 +13,13 @@
 namespace Blossom
 {
 
+	enum Attachments
+	{
+		AttachmentNone = 0,
+		ColourAttachment = BIT(0),
+		DepthAttachment = BIT(1)
+	};
+
 	class VulkanRenderPass
 	{
 	public:
@@ -23,15 +30,9 @@ namespace Blossom
 			sRGB = 50
 		};
 
-		enum Attachments
-		{
-			None = 0,
-			Colour = BIT(0),
-			Depth = BIT(1)
-		};
-
 	public:
 		VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments);
+		VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, int attachments);
 		virtual ~VulkanRenderPass();
 
 		void RecreateFrameBuffers();
@@ -42,7 +43,7 @@ namespace Blossom
 
 	private:
 		ColourSpace m_ColourSpace = ColourSpace::None;
-		Attachments m_Attachments = Attachments::None;
+		Attachments m_Attachments = AttachmentNone;
 
 		VkRenderPass m_RenderPass = VK_NULL_HANDLE;
 		std::vector<VkFramebuffer> m_SwapChainFramebuffers = { };

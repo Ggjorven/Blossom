@@ -10,7 +10,7 @@ namespace Blossom
 	class OpenGLContext : public GraphicsContext
 	{
 	public:
-		OpenGLContext(GLFWwindow* handle);
+		OpenGLContext(GLFWwindow* handle, bool vsync = false);
 		virtual ~OpenGLContext() = default;
 
 		void Init() override;

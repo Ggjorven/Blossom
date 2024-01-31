@@ -12,7 +12,7 @@ namespace Blossom
 
 	VulkanContext* VulkanContext::s_Instance = nullptr;
 
-	VulkanContext::VulkanContext(GLFWwindow* handle)
+	VulkanContext::VulkanContext(GLFWwindow* handle, bool vsync)
 		: m_WindowHandle(handle)
 	{
 		s_Instance = this;
@@ -34,9 +34,9 @@ namespace Blossom
 
 	void VulkanContext::Destroy()
 	{
-		delete m_Instance;
 		delete m_SwapChain;
 		delete m_Resources;
+		delete m_Instance;
 
 		s_Instance = nullptr;
 	}

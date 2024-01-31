@@ -24,6 +24,8 @@ namespace Blossom
 			layer->OnDetach();
 			delete layer;
 		}
+
+		Renderer::Destroy();
 	}
 
 	void Application::OnEvent(Event& e)
@@ -86,11 +88,10 @@ namespace Blossom
 
 		Log::Init();
 		
-		appInfo.APISpecs.VSync = appInfo.WindowProperties.VSync;
-		Renderer::Init(appInfo.APISpecs);
-
 		m_Window = Window::Create(appInfo.WindowProperties);
 		m_Window->SetEventCallBack(BL_BIND_EVENT_FN(Application::OnEvent));
+
+		Renderer::Init(appInfo.APISpecs);
 
 		m_ImGuiLayer = BaseImGuiLayer::Create();
 		AddOverlay(m_ImGuiLayer);
@@ -110,6 +111,7 @@ namespace Blossom
 			return true;
 		}
 
+		Renderer::OnResize(e.GetWidth(), e.GetHeight());
 		m_Minimized = false;
 		return false;
 	}

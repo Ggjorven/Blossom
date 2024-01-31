@@ -37,7 +37,7 @@ namespace Blossom
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		Renderer::GetAPISpecs().VSync = true;
+		// TODO(Jorben): Renderer recreate (for vulkan)
 		m_Data.Vsync = enabled;
 	}
 
@@ -168,6 +168,8 @@ namespace Blossom
 
 	void WindowsWindow::Shutdown()
 	{
+		m_GraphicsContext->Destroy();
+
 		glfwDestroyWindow(m_Window);
 		s_Instances--;
 

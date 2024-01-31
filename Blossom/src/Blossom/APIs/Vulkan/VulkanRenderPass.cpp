@@ -16,6 +16,11 @@ namespace Blossom
 		CreateFrameBuffers(extent, colourSpace, attachments);
 	}
 
+	VulkanRenderPass::VulkanRenderPass(const glm::vec2& extent, ColourSpace colourSpace, int attachments)
+		: VulkanRenderPass(extent, colourSpace, (Attachments)attachments)
+	{
+	}
+
 	VulkanRenderPass::~VulkanRenderPass()
 	{
 		VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
@@ -77,7 +82,7 @@ namespace Blossom
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpass.colorAttachmentCount = 1;
 		subpass.pColorAttachments = &colorAttachmentRef;
-		if (attachments & Attachments::Depth) subpass.pDepthStencilAttachment = &depthAttachmentRef;
+		if (attachments & DepthAttachment) subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
 		VkSubpassDependency dependency = {};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -85,12 +90,12 @@ namespace Blossom
 		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 		dependency.srcAccessMask = 0;
 		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		if (attachments & Attachments::Depth) dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		if (attachments & DepthAttachment) dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 		else dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
 		std::vector<VkAttachmentDescription> attachmentsDes = {};
 
-		if (attachments & Attachments::Depth)
+		if (attachments & DepthAttachment)
 			attachmentsDes = { colorAttachment, depthAttachment };
 		else
 			attachmentsDes = { colorAttachment };
@@ -119,7 +124,7 @@ namespace Blossom
 		{
 			std::vector<VkImageView> attachmentViews = { };
 
-			if (attachments & Attachments::Depth)
+			if (attachments & DepthAttachment)
 				attachmentViews = { swapChainImageViews[i], depthImageView };
 			else
 				attachmentViews = { swapChainImageViews[i] };

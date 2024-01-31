@@ -16,6 +16,8 @@ namespace Blossom
 		void SetClearColourImpl(const glm::vec4& colour) override;
 
 		void UseControllerImpl(const RenderController& controller) override;
+
+		void OnResizeImpl(uint32_t width, uint32_t height) override {}
 	};
 
 }

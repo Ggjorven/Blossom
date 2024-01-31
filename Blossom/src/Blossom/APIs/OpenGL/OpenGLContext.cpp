@@ -9,7 +9,7 @@
 namespace Blossom
 {
 
-	OpenGLContext::OpenGLContext(GLFWwindow* handle)
+	OpenGLContext::OpenGLContext(GLFWwindow* handle, bool vsync)
 		: m_WindowHandle(handle)
 	{
 	}
