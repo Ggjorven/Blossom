@@ -3,6 +3,9 @@
 
 #include <GL/glew.h>
 
+#include "Blossom/Renderer/VertexBuffer.hpp"
+#include "Blossom/Renderer/IndexBuffer.hpp"
+
 namespace Blossom
 {
 
@@ -19,6 +22,16 @@ namespace Blossom
 
 	void OpenGLRenderer::UseControllerImpl(const RenderController& controller)
 	{
+	}
+
+	void OpenGLRenderer::DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer)
+	{
+		glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void OpenGLRenderer::OnResizeImpl(uint32_t width, uint32_t height)
+	{
+		glViewport(0, 0, width, height);
 	}
 
 	void OpenGLRenderer::AddToQueueImpl(RenderFunction function)

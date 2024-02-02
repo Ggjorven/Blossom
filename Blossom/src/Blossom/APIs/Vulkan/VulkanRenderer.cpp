@@ -43,6 +43,11 @@ namespace Blossom
 	{
 	}
 
+	void VulkanRenderer::DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer)
+	{
+		// TODO
+	}
+
 	void VulkanRenderer::OnResizeImpl(uint32_t width, uint32_t height)
 	{
 		VulkanManager::RecreateSwapChain();

@@ -189,9 +189,9 @@ namespace Blossom
 		switch (Renderer::GetAPI())
 		{
 		case RenderingAPI::OpenGL:
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // TODO(Jorben): Change back to CORE profile
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 			break;
 		case RenderingAPI::Vulkan:
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

@@ -10,7 +10,7 @@ namespace Blossom
 {
 
 	Renderer* Renderer::s_Instance = nullptr;
-	RenderingAPI Renderer::s_API = RenderingAPI::Vulkan; // Note(Jorben): This is where the API is selected.
+	RenderingAPI Renderer::s_API = RenderingAPI::OpenGL; // Note(Jorben): This is where the API is selected.
 	APISpecifications Renderer::s_APISpecs = {};
 
 	RenderController Renderer::s_BoundController = {};

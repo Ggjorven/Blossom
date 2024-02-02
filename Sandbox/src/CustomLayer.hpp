@@ -1,6 +1,9 @@
 #pragma once
 
 #include <Blossom/Core/Layer.hpp>
+#include <Blossom/Renderer/VertexBuffer.hpp>
+#include <Blossom/Renderer/IndexBuffer.hpp>
+#include <Blossom/Renderer/Shader.hpp>
 
 using namespace Blossom;
 
@@ -15,4 +18,12 @@ public:
 	void OnImGuiRender() override;
 
 	void OnEvent(Event& e);
+
+private:
+	std::shared_ptr<VertexBuffer> m_VertexBuffer = nullptr;
+	std::shared_ptr<IndexBuffer> m_IndexBuffer = nullptr;
+
+	std::shared_ptr<Shader> m_Shader = nullptr; // TODO(Jorben): Move to rendercontroller
+
+	float m_Timer = 0.0f; // For FPS updates
 };

@@ -15,12 +15,17 @@ project "Sandbox"
 	{
 		"src/**.h",
 		"src/**.hpp",
-		"src/**.cpp"
+		"src/**.cpp",
+
+		"vendor/**.h",
+		"vendor/**.hpp",
+		"vendor/**.cpp"
 	}
 
 	includedirs
 	{
 		"src",
+		"vendor",
 
 		"%{wks.location}/Blossom/src",
 		"%{wks.location}vendor",
@@ -53,22 +58,22 @@ project "Sandbox"
 
 		defines
 		{
-			"GL_PLATFORM_WINDOWS",
+			"BL_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE"
 		}
 
 	filter "configurations:Debug"
-		defines "GL_DEBUG"
+		defines "BL_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "GL_RELEASE"
+		defines "BL_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "GL_DIST"
+		defines "BL_DIST"
 		runtime "Release"
 		optimize "on"
 

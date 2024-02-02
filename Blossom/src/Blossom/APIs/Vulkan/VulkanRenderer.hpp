@@ -25,6 +25,8 @@ namespace Blossom
 
 		void UseControllerImpl(const RenderController& controller) override;
 
+		void DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer) override;
+
 		void OnResizeImpl(uint32_t width, uint32_t height) override;
 
 		void AddToQueueImpl(RenderFunction function) override;
