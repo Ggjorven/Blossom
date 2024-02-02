@@ -3,6 +3,10 @@
 
 #include "Blossom/Core/Logging.hpp"
 
+#include <vulkan/vulkan.h>
+
+#include "Blossom/Renderer/IndexBuffer.hpp"
+
 #include "Blossom/APIs/Vulkan/VulkanContext.hpp"
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
 #include "Blossom/APIs/Vulkan/Setup/VulkanResources.hpp"
@@ -29,6 +33,13 @@ namespace Blossom
 		s_Instance = nullptr;
 	}
 
+	void VulkanRenderer::WaitImpl()
+	{
+		VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
+
+		vkDeviceWaitIdle(info.Device);
+	}
+
 	void VulkanRenderer::ClearImpl()
 	{
 		// Note(Jorben): This function is kinda redundant for vulkan so it is empty
@@ -39,13 +50,11 @@ namespace Blossom
 		Renderer::GetAPISpecs().ClearColour = colour;
 	}
 
-	void VulkanRenderer::UseControllerImpl(const RenderController& controller)
-	{
-	}
-
 	void VulkanRenderer::DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer)
 	{
-		// TODO
+		auto& resourceInfo = VulkanManager::GetResourceInfo();
+
+		vkCmdDrawIndexed(resourceInfo.CommandBuffers[VulkanRenderer::GetCurrentFrame()], indexBuffer->GetCount(), 1, 0, 0, 0);
 	}
 
 	void VulkanRenderer::OnResizeImpl(uint32_t width, uint32_t height)

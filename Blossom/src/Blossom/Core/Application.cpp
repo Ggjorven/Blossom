@@ -19,6 +19,8 @@ namespace Blossom
 
 	Application::~Application()
 	{
+		Renderer::Wait();
+
 		for (Layer* layer : m_LayerStack)
 		{
 			layer->OnDetach();

@@ -14,10 +14,10 @@ namespace Blossom
 		virtual ~OpenGLRenderer() = default;
 
 	private:
+		void WaitImpl() override;
+
 		void ClearImpl() override;
 		void SetClearColourImpl(const glm::vec4& colour) override;
-
-		void UseControllerImpl(const RenderController& controller) override;
 
 		void DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer) override;
 

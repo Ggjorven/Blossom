@@ -9,6 +9,11 @@
 namespace Blossom
 {
 
+	void OpenGLRenderer::WaitImpl()
+	{
+		// Note(Jorben): This function is irrevelant for OpenGL
+	}
+
 	void OpenGLRenderer::ClearImpl()
 	{
 		glClear((unsigned int)Renderer::GetAPISpecs().ClearValues);
@@ -18,10 +23,6 @@ namespace Blossom
 	{
 		glClearColor(colour.r, colour.g, colour.b, colour.a);
 		Renderer::GetAPISpecs().ClearColour = colour;
-	}
-
-	void OpenGLRenderer::UseControllerImpl(const RenderController& controller)
-	{
 	}
 
 	void OpenGLRenderer::DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer)

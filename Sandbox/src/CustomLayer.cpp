@@ -11,9 +11,9 @@ void CustomLayer::OnAttach()
 
 	float squareVertices[6 * 4] = {
 		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f
 	};
 
 	uint32_t squareIndices[6] = {
@@ -22,12 +22,22 @@ void CustomLayer::OnAttach()
 	};
 
 	m_VertexBuffer = VertexBuffer::Create((void*)squareVertices, sizeof(squareVertices));
-	m_VertexBuffer->SetLayout({
+	BufferLayout layout = {
 		BufferElement(BufferDataType::Float3, 0, "a_Position", false),
 		BufferElement(BufferDataType::Float3, 1, "a_Colour", false)
-	});
-
+	};
+	m_VertexBuffer->SetLayout(layout);
+	
 	m_IndexBuffer = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+	
+	/*
+	m_Controller = RenderController::Create();
+
+	// vb...
+
+	m_Controller->SetBufferLayout(layout);
+
+	// ib...
 
 	std::string vertex = R"(
 	#version 460 core
@@ -57,7 +67,9 @@ void CustomLayer::OnAttach()
 	}
 )";
 
-	m_Shader = Shader::Create(vertex, fragment);
+	std::shared_ptr<Shader> shader = Shader::Create(vertex, fragment);
+	m_Controller->SetShader(shader);
+	*/
 }
 
 void CustomLayer::OnDetach()
@@ -73,17 +85,17 @@ void CustomLayer::OnRender()
 {
 	Renderer::Clear();
 
-	m_Shader->Bind();
+	Renderer::AddToQueue([this]() {
+		//m_Controller->Use();
 
-	m_VertexBuffer->Bind();
-	m_IndexBuffer->Bind();
+		m_VertexBuffer->Bind();
+		m_IndexBuffer->Bind();
 
-	Renderer::DrawIndexed(m_IndexBuffer);
+		//Renderer::DrawIndexed(m_IndexBuffer);
 
-	m_IndexBuffer->UnBind();
-	m_VertexBuffer->UnBind();
-
-	m_Shader->UnBind();
+		m_IndexBuffer->UnBind();
+		m_VertexBuffer->UnBind();
+	});
 }
 
 void CustomLayer::OnImGuiRender()
@@ -98,7 +110,7 @@ void CustomLayer::OnImGuiRender()
 		m_Timer = 0.0f;
 	}
 
-	ImGui::Text(fmt::format("FPS: {:.1f}", fps).c_str());
+	ImGui::Text(fmt::format("FPS: {:.0f}", fps).c_str());
 
 	ImGui::End();
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Blossom/Core/Layer.hpp>
+#include <Blossom/Renderer/RenderController.hpp>
 #include <Blossom/Renderer/VertexBuffer.hpp>
 #include <Blossom/Renderer/IndexBuffer.hpp>
 #include <Blossom/Renderer/Shader.hpp>
@@ -23,7 +24,7 @@ private:
 	std::shared_ptr<VertexBuffer> m_VertexBuffer = nullptr;
 	std::shared_ptr<IndexBuffer> m_IndexBuffer = nullptr;
 
-	std::shared_ptr<Shader> m_Shader = nullptr; // TODO(Jorben): Move to rendercontroller
+	std::shared_ptr<RenderController> m_Controller = nullptr;
 
 	float m_Timer = 0.0f; // For FPS updates
 };

@@ -6,6 +6,7 @@
 #include "Blossom/Renderer/Renderer.hpp"
 
 #include "Blossom/APIs/OpenGL/OpenGLIndexBuffer.hpp"
+#include "Blossom/APIs/Vulkan/VulkanIndexBuffer.hpp"
 
 namespace Blossom
 {
@@ -17,7 +18,7 @@ namespace Blossom
 		case RenderingAPI::OpenGL:
 			return std::make_shared<OpenGLIndexBuffer>(indices, count);
 		case RenderingAPI::Vulkan:
-			return nullptr;
+			return std::make_shared<VulkanIndexBuffer>(indices, count);
 
 		default:
 			BL_LOG_ERROR("Unknown Renderer::API selected.");

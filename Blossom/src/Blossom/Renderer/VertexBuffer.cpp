@@ -6,7 +6,7 @@
 #include "Blossom/Renderer/Renderer.hpp"
 
 #include "Blossom/APIs/OpenGL/OpenGLVertexBuffer.hpp"
-//#include "Blossom/APIs/Vulkan/VulkanVertexBuffer.hpp"
+#include "Blossom/APIs/Vulkan/VulkanVertexBuffer.hpp"
 
 namespace Blossom
 {
@@ -83,7 +83,7 @@ namespace Blossom
 		case RenderingAPI::OpenGL:
 			return std::make_shared<OpenGLVertexBuffer>(data, size);
 		case RenderingAPI::Vulkan:
-			return nullptr;
+			return std::make_shared<VulkanVertexBuffer>(data, size);
 
 		default:
 			BL_LOG_ERROR("Unknown Renderer::API selected.");
