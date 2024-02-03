@@ -34,7 +34,7 @@ namespace Blossom
 
 	void WindowsWindow::OnRender()
 	{
-		FrameMarkNamed("main");
+		FrameMark;
 		m_GraphicsContext->SwapBuffers();
 	}
 

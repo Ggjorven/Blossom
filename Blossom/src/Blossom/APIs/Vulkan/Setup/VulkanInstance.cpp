@@ -10,6 +10,9 @@
 
 #include "Blossom/APIs/Vulkan/VulkanContext.hpp"
 
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyVulkan.hpp"
+
 static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
 	const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger)
 {

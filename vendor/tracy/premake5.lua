@@ -32,6 +32,11 @@ project "Tracy"
 
 	includedirs { "tracy/public/" }
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 		staticruntime "On"
@@ -58,15 +63,15 @@ project "Tracy"
 		symbols "On"
 		conformancemode "On"
 
-		defines {
-			"TRACY_ENABLE",
-			"TRACY_ON_DEMAND"
-		}
+		-- defines {
+		-- 	"TRACY_ENABLE",
+		-- 	"TRACY_ON_DEMAND"
+		-- }
 
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "On"
-		-- conformancemode "On"
+		conformancemode "On"
 
 		defines {
 			"TRACY_ENABLE",
@@ -76,7 +81,7 @@ project "Tracy"
 	filter "configurations:Dist"
 		runtime "Release"
 		optimize "Full"
-		-- conformancemode "On"
+		conformancemode "On"
 
 		defines {
 			"TRACY_ENABLE",

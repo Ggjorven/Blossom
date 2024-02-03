@@ -12,6 +12,7 @@
 #include "Blossom/APIs/Vulkan/Setup/VulkanResources.hpp"
 
 #include "tracy/Tracy.hpp"
+#include "tracy/TracyVulkan.hpp"
 
 namespace Blossom
 {
@@ -44,7 +45,7 @@ namespace Blossom
 
 	void VulkanRenderer::ClearImpl()
 	{
-		//ZoneScopedN("VulkanRenderer::Clear");
+		ZoneScoped;
 		// Note(Jorben): This function is kinda redundant for vulkan so it is empty
 	}
 
@@ -160,6 +161,9 @@ namespace Blossom
 		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
 			BL_LOG_ERROR("Failed to begin recording command buffer!");
 
+		// Begin profiler zone
+		//TracyVkZone(VulkanManager::GetTracyContexts()[m_CurrentFrame], commandBuffer, "RecordCommandBuffer");
+		
 		//
 		// TODO(Jorben): Create a custom way to start a render pass
 		//
@@ -219,8 +223,11 @@ namespace Blossom
 
 		vkCmdEndRenderPass(commandBuffer);
 
+		
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
 			BL_LOG_ERROR("Failed to record command buffer!");
+		
+		//TracyVkCollect(VulkanManager::GetTracyContexts()[m_CurrentFrame], commandBuffer);
 	}
 
 }
