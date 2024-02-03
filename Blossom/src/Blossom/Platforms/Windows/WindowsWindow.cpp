@@ -6,6 +6,8 @@
 
 #include "Blossom/Renderer/Renderer.hpp"
 
+#include "tracy/Tracy.hpp"
+
 namespace Blossom
 {
 
@@ -32,6 +34,7 @@ namespace Blossom
 
 	void WindowsWindow::OnRender()
 	{
+		FrameMarkNamed("main");
 		m_GraphicsContext->SwapBuffers();
 	}
 

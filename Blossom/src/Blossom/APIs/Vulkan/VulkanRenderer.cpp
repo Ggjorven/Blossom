@@ -11,6 +11,8 @@
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
 #include "Blossom/APIs/Vulkan/Setup/VulkanResources.hpp"
 
+#include "tracy/Tracy.hpp"
+
 namespace Blossom
 {
 
@@ -42,6 +44,7 @@ namespace Blossom
 
 	void VulkanRenderer::ClearImpl()
 	{
+		//ZoneScopedN("VulkanRenderer::Clear");
 		// Note(Jorben): This function is kinda redundant for vulkan so it is empty
 	}
 

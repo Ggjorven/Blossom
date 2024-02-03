@@ -8,6 +8,7 @@ IncludeDir["spdlog"] = "%{wks.location}/vendor/spdlog/include"
 IncludeDir["stb_image"] = "%{wks.location}/vendor/stb_image/include"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
 IncludeDir["assimp"] = "%{wks.location}/vendor/assimp/include"
+IncludeDir["tracy"] = "%{wks.location}/vendor/tracy/tracy/public"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 IncludeDir["VMA"] = "%{wks.location}/vendor/VulkanMemoryAllocator/include"
 

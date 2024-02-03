@@ -37,6 +37,7 @@ project "Sandbox"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
+		"%{IncludeDir.tracy}",
 		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.VMA}"
 	}
@@ -59,7 +60,8 @@ project "Sandbox"
 		defines
 		{
 			"BL_PLATFORM_WINDOWS",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"TRACY_ENABLE"
 		}
 
 	filter "configurations:Debug"

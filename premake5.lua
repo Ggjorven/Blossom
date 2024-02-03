@@ -22,6 +22,7 @@ group "Additional Dependencies"
 	include "vendor/GLEW"
 	include "vendor/GLFW"
 	include "vendor/ImGui"
+	include "vendor/tracy"
 	include "vendor/VulkanMemoryAllocator"
 group ""
 

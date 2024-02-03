@@ -25,7 +25,8 @@ project "Blossom"
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE",
-		"GLEW_STATIC"
+		"GLEW_STATIC",
+		"TRACY_ENABLE"
 		-- "ASSIMP_BUILD_STATIC_LIB"
 	}
 
@@ -41,6 +42,7 @@ project "Blossom"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
+		"%{IncludeDir.tracy}",
 		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.VMA}"
 	}
@@ -53,6 +55,7 @@ project "Blossom"
 		"GLEW",
 		"GLFW",
 		"ImGui",
+		"Tracy",
 		"VMA"
 	}
 

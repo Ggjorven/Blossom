@@ -10,7 +10,6 @@ namespace Blossom
 {
 
 	Renderer* Renderer::s_Instance = nullptr;
-	RenderingAPI Renderer::s_API = RenderingAPI::Vulkan; // Note(Jorben): This is where the API is selected.
 	APISpecifications Renderer::s_APISpecs = {};
 
 	void Renderer::Init(const APISpecifications& specs)

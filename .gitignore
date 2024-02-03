@@ -45,6 +45,10 @@ vendor/assimp/assimp.vcxproj
 vendor/assimp/assimp.vcxproj.filters
 vendor/assimp/assimp.vcxproj.user
 
+vendor/tracy/Tracy.vcxproj
+vendor/tracy/Tracy.vcxproj.filters
+vendor/tracy/Tracy.vcxproj.user
+
 vendor/VulkanMemoryAllocator/VMA.vcxproj
 vendor/VulkanMemoryAllocator/VMA.vcxproj.filters
 vendor/VulkanMemoryAllocator/VMA.vcxproj.user

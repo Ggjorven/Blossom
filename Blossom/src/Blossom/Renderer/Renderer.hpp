@@ -60,7 +60,7 @@ namespace Blossom
 
 	private:
 		static Renderer* s_Instance;
-		static RenderingAPI s_API;
+		static constexpr const RenderingAPI s_API = RenderingAPI::Vulkan; // Note(Jorben): This is where the API is selected.
 		static APISpecifications s_APISpecs;
 
 		friend class Application;
