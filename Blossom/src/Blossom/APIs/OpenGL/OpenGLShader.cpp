@@ -8,6 +8,46 @@
 namespace Blossom
 {
 
+	OpenGLShader::OpenGLShader(const std::vector<char>& vertex, const std::vector<char>& fragment)
+	{
+		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		glShaderBinary(1, &vertexShader, GL_SHADER_BINARY_FORMAT_SPIR_V, vertex.data(), (int)vertex.size());
+		glSpecializeShader(vertexShader, "main", 0, nullptr, nullptr);
+
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderBinary(1, &fragmentShader, GL_SHADER_BINARY_FORMAT_SPIR_V, fragment.data(), (int)fragment.size());
+		glSpecializeShader(fragmentShader, "main", 0, nullptr, nullptr);
+
+		m_RendererID = glCreateProgram();
+		glAttachShader(m_RendererID, vertexShader);
+		glAttachShader(m_RendererID, fragmentShader);
+
+		glLinkProgram(m_RendererID);
+
+		// Check for linking errors
+		GLint isLinked = 0;
+		glGetProgramiv(m_RendererID, GL_LINK_STATUS, &isLinked);
+		if (isLinked == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
+
+			std::vector<GLchar> infoLog(maxLength);
+			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
+
+			glDeleteProgram(m_RendererID);
+
+			glDeleteShader(vertexShader);
+			glDeleteShader(fragmentShader);
+
+			std::string errorMsg(infoLog.begin(), infoLog.end());
+			BL_LOG_ERROR("OpenGL linking error: {0}", errorMsg);
+		}
+
+		glDetachShader(m_RendererID, vertexShader);
+		glDetachShader(m_RendererID, fragmentShader);
+	}
+
 	OpenGLShader::OpenGLShader(const std::string& vertexSource, const std::string fragmentSource)
 	{
 		m_RendererID = Create(vertexSource, fragmentSource);

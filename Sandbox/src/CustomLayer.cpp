@@ -20,6 +20,8 @@ void CustomLayer::OnAttach()
 		0, 1, 2,
 		2, 3, 0
 	};
+	
+	m_Controller = RenderController::Create();
 
 	m_VertexBuffer = VertexBuffer::Create((void*)squareVertices, sizeof(squareVertices));
 	BufferLayout layout = {
@@ -27,17 +29,10 @@ void CustomLayer::OnAttach()
 		BufferElement(BufferDataType::Float3, 1, "a_Colour", false)
 	};
 	m_VertexBuffer->SetLayout(layout);
-	
-	m_IndexBuffer = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-	
-	/*
-	m_Controller = RenderController::Create();
-
-	// vb...
 
 	m_Controller->SetBufferLayout(layout);
 
-	// ib...
+	m_IndexBuffer = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
 	std::string vertex = R"(
 	#version 460 core
@@ -45,7 +40,7 @@ void CustomLayer::OnAttach()
 	layout(location = 0) in vec3 a_Position;
 	layout(location = 1) in vec3 a_Colour;
 
-	out vec3 v_Colour;
+	layout(location = 0) out vec3 v_Colour;
 
 	void main()
 	{
@@ -59,17 +54,20 @@ void CustomLayer::OnAttach()
 
 	layout(location = 0) out vec4 colour;
 
-	in vec3 v_Colour;
+	layout(location = 0) in vec3 v_Colour;
 
 	void main()
 	{
 		colour = vec4(v_Colour, 1.0);
 	}
 )";
+	// TODO(Jorben): ^Make this code compilable to SPIRV for Vulkan^
+	//std::shared_ptr<Shader> shader = Shader::Create(vertex, fragment);
 
-	std::shared_ptr<Shader> shader = Shader::Create(vertex, fragment);
+	std::shared_ptr<Shader> shader = Shader::Create(Shader::ReadSPIRVFile("assets/shaders/vert.spv"), Shader::ReadSPIRVFile("assets/shaders/frag.spv"));
 	m_Controller->SetShader(shader);
-	*/
+
+	m_Controller->Initialize();
 }
 
 void CustomLayer::OnDetach()
@@ -86,12 +84,12 @@ void CustomLayer::OnRender()
 	Renderer::Clear();
 
 	Renderer::AddToQueue([this]() {
-		//m_Controller->Use();
+		m_Controller->Use();
 
 		m_VertexBuffer->Bind();
 		m_IndexBuffer->Bind();
 
-		//Renderer::DrawIndexed(m_IndexBuffer);
+		Renderer::DrawIndexed(m_IndexBuffer);
 
 		m_IndexBuffer->UnBind();
 		m_VertexBuffer->UnBind();

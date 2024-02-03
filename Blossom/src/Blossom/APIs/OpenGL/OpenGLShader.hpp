@@ -10,7 +10,7 @@ namespace Blossom
 	class OpenGLShader : public Shader
 	{
 	public:
-		// TODO(Jorben): Implement SPIRV support
+		OpenGLShader(const std::vector<char>& vertex, const std::vector<char>& fragment);
 		OpenGLShader(const std::string& vertexSource, const std::string fragmentSource);
 		virtual ~OpenGLShader();
 

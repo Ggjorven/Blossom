@@ -11,6 +11,7 @@ namespace Blossom
 {
 
 	VulkanIndexBuffer::VulkanIndexBuffer(uint32_t* data, uint32_t count)
+        : m_Count(count)
 	{
         VkDeviceSize bufferSize = sizeof(uint32_t) * count;
         VulkanBufferHelper::CreateBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY, m_Buffer, m_BufferAllocation);

@@ -6,6 +6,7 @@
 #include "Blossom/Renderer/Renderer.hpp"
 
 #include "Blossom/APIs/OpenGL/OpenGLRenderController.hpp"
+#include "Blossom/APIs/Vulkan/VulkanRenderController.hpp"
 
 namespace Blossom
 {
@@ -17,7 +18,7 @@ namespace Blossom
 		case RenderingAPI::OpenGL:
 			return std::make_shared<OpenGLRenderController>();
 		case RenderingAPI::Vulkan:
-			return nullptr;
+			return std::make_shared<VulkanRenderController>();
 
 		default:
 			BL_LOG_ERROR("Unknown Renderer::API selected.");
