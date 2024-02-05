@@ -64,15 +64,12 @@ namespace Blossom
 		virtual ~VulkanManager() = default;
 
 		static void Init();
-		static void InitProfiler();
 
 		static void RecreateSwapChain();
 
 		static VulkanDeviceInfo& GetDeviceInfo() { return s_Instance->m_DeviceInfo; }
 		static VulkanSwapChainInfo& GetSwapChainInfo() { return s_Instance->m_SwapChainInfo; }
 		static VulkanResourceInfo& GetResourceInfo() { return s_Instance->m_ResourceInfo; }
-
-		static std::vector<TracyVkCtx>& GetTracyContexts() { return s_Instance->m_TracyContexts; }
 
 		static void PopulateDeviceInfo();
 		static void PopulateSwapChainInfo();
@@ -86,8 +83,6 @@ namespace Blossom
 		VulkanDeviceInfo m_DeviceInfo = {};
 		VulkanSwapChainInfo m_SwapChainInfo = {};
 		VulkanResourceInfo m_ResourceInfo = {};
-
-		std::vector<TracyVkCtx> m_TracyContexts = { };
 
 	private:
 		static std::unique_ptr<VulkanManager> s_Instance;

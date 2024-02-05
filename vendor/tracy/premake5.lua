@@ -63,10 +63,10 @@ project "Tracy"
 		symbols "On"
 		conformancemode "On"
 
-		-- defines {
-		-- 	"TRACY_ENABLE",
-		-- 	"TRACY_ON_DEMAND"
-		-- }
+		defines {
+			"TRACY_ENABLE",
+			"TRACY_ON_DEMAND"
+		}
 
 	filter "configurations:Release"
 		runtime "Release"

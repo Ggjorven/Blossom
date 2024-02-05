@@ -6,6 +6,8 @@
 #include "Blossom/Core/Logging.hpp"
 #include "Blossom/Renderer/Renderer.hpp"
 
+#include "Blossom/Utils/Profiler.hpp"
+
 namespace Blossom
 {
 
@@ -58,17 +60,28 @@ namespace Blossom
 
 			// Update & Render
 			m_Window->OnUpdate();
-
-			for (Layer* layer : m_LayerStack)
 			{
-				layer->OnUpdate(deltaTime);
-				layer->OnRender();
+				BL_PROFILE_SCOPE("Update & Render");
+				for (Layer* layer : m_LayerStack)
+				{
+					layer->OnUpdate(deltaTime);
+					layer->OnRender();
+				}
 			}
 
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
-			m_ImGuiLayer->End();
+			{
+				BL_PROFILE_SCOPE("ImGui Submission");
+				{
+					BL_PROFILE_SCOPE("ImGui::Begin");
+					m_ImGuiLayer->Begin();
+				}
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+				{
+					BL_PROFILE_SCOPE("ImGui::End");
+					m_ImGuiLayer->End();
+				}
+			}
 
 			Renderer::Display();
 

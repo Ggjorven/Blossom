@@ -6,7 +6,7 @@
 
 #include "Blossom/Renderer/Renderer.hpp"
 
-#include "tracy/Tracy.hpp"
+#include "Blossom/Utils/Profiler.hpp"
 
 namespace Blossom
 {
@@ -29,12 +29,14 @@ namespace Blossom
 
 	void WindowsWindow::OnUpdate()
 	{
+		BL_PROFILE_SCOPE("PollEvents");
 		glfwPollEvents();
 	}
 
 	void WindowsWindow::OnRender()
 	{
 		FrameMark;
+		BL_PROFILE_SCOPE("SwapBuffers");
 		m_GraphicsContext->SwapBuffers();
 	}
 

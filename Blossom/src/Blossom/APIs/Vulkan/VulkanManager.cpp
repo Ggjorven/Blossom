@@ -16,19 +16,6 @@ namespace Blossom
 		s_Instance = std::make_unique<VulkanManager>();
 	}
 
-	void VulkanManager::InitProfiler()
-	{
-		// Initialize tracy (profiler)
-		auto& deviceInfo = GetDeviceInfo();
-		auto& resourceInfo = GetResourceInfo();
-
-		s_Instance->m_TracyContexts.resize((size_t)BL_MAX_FRAMES_IN_FLIGHT);
-		for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++)
-		{
-			s_Instance->m_TracyContexts[i] = TracyVkContext(deviceInfo.PhysicalDevice, deviceInfo.Device, deviceInfo.GraphicsQueue, resourceInfo.CommandBuffers[i]);
-		}
-	}
-
 	void VulkanManager::RecreateSwapChain()
 	{
 		VulkanSwapChain& vc = *VulkanContext::Get()->GetSwapChain();

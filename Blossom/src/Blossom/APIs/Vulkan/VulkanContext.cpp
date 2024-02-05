@@ -32,7 +32,6 @@ namespace Blossom
 		m_Resources = new VulkanResources();
 		VulkanManager::PopulateResourceInfo();
 
-		VulkanManager::InitProfiler();
 		VulkanBufferHelper::Init();
 	}
 
