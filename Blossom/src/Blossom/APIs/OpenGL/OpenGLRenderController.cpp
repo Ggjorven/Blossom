@@ -19,6 +19,11 @@ namespace Blossom
 		// Note(Jorben): This function is irrelevant for OpenGL
 	}
 
+	void OpenGLRenderController::SetUniformLayout(UniformLayout& layout)
+	{
+		// !TODO(Jorben): Implement
+	}
+
 	void OpenGLRenderController::Initialize()
 	{
 		// Note(Jorben): This function is irrelevant for OpenGL

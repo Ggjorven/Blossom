@@ -34,40 +34,23 @@ void CustomLayer::OnAttach()
 
 	m_IndexBuffer = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
-	std::string vertex = R"(
-	#version 460 core
+	// Initialize uniform buffer
+	UniformElement colourElement = UniformElement(UniformDataType::UBO, 0, "u_Colour", UniformElement_Stage_Fragment);
+	
+	UniformLayout uniformlayout = { colourElement };
+	m_Controller->SetUniformLayout(uniformlayout);
 
-	layout(location = 0) in vec3 a_Position;
-	layout(location = 1) in vec3 a_Colour;
+	m_UniformBuffer = UniformBufferObject::Create(m_Controller, colourElement, sizeof(glm::vec4));
 
-	layout(location = 0) out vec3 v_Colour;
-
-	void main()
-	{
-		gl_Position = vec4(a_Position, 1.0);
-		v_Colour = a_Colour;
-	}
-)";
-
-	std::string fragment = R"(
-	#version 460 core
-
-	layout(location = 0) out vec4 colour;
-
-	layout(location = 0) in vec3 v_Colour;
-
-	void main()
-	{
-		colour = vec4(v_Colour, 1.0);
-	}
-)";
-	// TODO(Jorben): ^Make this code compilable to SPIRV for Vulkan^
-	//std::shared_ptr<Shader> shader = Shader::Create(vertex, fragment);
+	// Note(Jorben): The data can be set from anywhere and doesn't even need to be setup here beforehand
+	glm::vec4 col = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	m_UniformBuffer->SetData((void*)&col, sizeof(glm::vec4));
 
 	std::shared_ptr<Shader> shader = Shader::Create(Shader::ReadSPIRVFile("assets/shaders/vert.spv"), Shader::ReadSPIRVFile("assets/shaders/frag.spv"));
 	m_Controller->SetShader(shader);
 
 	m_Controller->Initialize();
+	m_UniformBuffer->UploadToController();
 }
 
 void CustomLayer::OnDetach()
@@ -77,6 +60,14 @@ void CustomLayer::OnDetach()
 void CustomLayer::OnUpdate(float deltaTime)
 {
 	m_Timer += deltaTime;
+
+	float r = 0.5f * (1.0f + glm::sin(m_Timer * 2.0f * 3.1415f));
+	float g = 0.5f * (1.0f + glm::sin(m_Timer * 2.0f * 3.1415f + 2.0f * 3.1415f / 3.0f));
+	float b = 0.5f * (1.0f + glm::sin(m_Timer * 2.0f * 3.1415f + 4.0f * 3.1415f / 3.0f));
+
+	glm::vec4 col = glm::vec4(r, g, b, 1.0f);
+
+	m_UniformBuffer->SetData((void*)&col, sizeof(glm::vec4));
 }
 
 void CustomLayer::OnRender()

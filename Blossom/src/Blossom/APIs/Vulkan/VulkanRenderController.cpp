@@ -11,6 +11,8 @@ namespace Blossom
 {
 
 	static VkFormat BufferDataTypeToVulkanType(BufferDataType type);
+	static VkDescriptorType UniformDataTypeToVulkanDescriptorType(UniformDataType type);
+	static VkShaderStageFlags UniformStageFlagsToVulkanStageFlags(ShaderStageEnum flags);
 
 	VulkanRenderController::VulkanRenderController()
 	{
@@ -38,7 +40,10 @@ namespace Blossom
 	{
 		auto& resourceInfo = VulkanManager::GetResourceInfo();
 
-		vkCmdBindPipeline(resourceInfo.CommandBuffers[VulkanRenderer::GetCurrentFrame()], VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+		auto& cmdBuf = resourceInfo.CommandBuffers[VulkanRenderer::GetCurrentFrame()];
+		vkCmdBindPipeline(cmdBuf, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+		// TODO(Jorben): Make it support multiple sets
+		vkCmdBindDescriptorSets(cmdBuf, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[0][VulkanRenderer::GetCurrentFrame()], 0, nullptr);
 	}
 
 	void VulkanRenderController::SetShader(std::shared_ptr<Shader>& shader)
@@ -51,6 +56,11 @@ namespace Blossom
 		m_BufferLayout = layout;
 	}
 
+	void VulkanRenderController::SetUniformLayout(UniformLayout& layout)
+	{
+		m_UniformLayout = layout;
+	}
+
 	void VulkanRenderController::Initialize()
 	{
 		CreateDescriptorSetLayout();
@@ -59,9 +69,66 @@ namespace Blossom
 		CreateDescriptorSets();
 	}
 
+	void VulkanRenderController::AddUBO(std::array<VkBuffer, BL_MAX_FRAMES_IN_FLIGHT>& buffers, size_t size, uint32_t binding, uint32_t count)
+	{
+		// Initialize the descriptor sets/uniforms
+		for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			// Uniform
+			VkDescriptorBufferInfo bufferInfo = {};
+			bufferInfo.buffer = buffers[i];
+			bufferInfo.offset = 0;
+			bufferInfo.range = size;
+
+			// TODO(Jorben): Make this be able to use multiple descriptor sets
+			VkWriteDescriptorSet descriptorWrite = {};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_DescriptorSets[0][i];
+			descriptorWrite.dstBinding = binding;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = count;
+			descriptorWrite.pBufferInfo = &bufferInfo;
+
+			vkUpdateDescriptorSets(VulkanManager::GetDeviceInfo().Device, 1, &descriptorWrite, 0, nullptr);
+		}
+	}
+
+	std::shared_ptr<VulkanRenderController> VulkanRenderController::GetController(std::shared_ptr<RenderController>& renderController)
+	{
+		std::shared_ptr<VulkanRenderController> vulkanRCPtr = std::dynamic_pointer_cast<VulkanRenderController>(renderController);
+
+		if (!vulkanRCPtr)
+			BL_LOG_ERROR("Failed to convert std::shared_ptr<RenderController> to a std::shared_ptr<VulkanRenderController>");
+
+		return vulkanRCPtr;
+	}
+
 	void VulkanRenderController::CreateDescriptorSetLayout()
 	{
-		// TODO(Jorben): Implement
+		std::vector<VkDescriptorSetLayoutBinding> layouts = { };
+		
+		for (auto& element : m_UniformLayout)
+		{
+			VkDescriptorSetLayoutBinding layoutBinding = {};
+			layoutBinding.binding = element.Binding;
+			layoutBinding.descriptorType = UniformDataTypeToVulkanDescriptorType(element.Type);
+			layoutBinding.descriptorCount = element.Count;
+			layoutBinding.stageFlags = UniformStageFlagsToVulkanStageFlags(element.ShaderStage);
+			layoutBinding.pImmutableSamplers = nullptr; // Optional
+		
+			layouts.push_back(layoutBinding);
+		}
+		
+		VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = static_cast<uint32_t>(m_UniformLayout.GetElements().size());
+		layoutInfo.pBindings = layouts.data();
+		
+		// TODO(Jorben): Expand to be able to support multiple sets?
+		m_DescriptorLayouts.resize((size_t)1);
+		if (vkCreateDescriptorSetLayout(VulkanManager::GetDeviceInfo().Device, &layoutInfo, nullptr, m_DescriptorLayouts.data()) != VK_SUCCESS)
+			BL_LOG_ERROR("Failed to create descriptor set layout!");
 	}
 
 	void VulkanRenderController::CreateGraphicsPipeline()
@@ -194,12 +261,46 @@ namespace Blossom
 
 	void VulkanRenderController::CreateDescriptorPool()
 	{
-		// TODO(Jorben): Implement
+		std::vector<VkDescriptorPoolSize> poolSizes = { };
+		poolSizes.resize((size_t)m_UniformLayout.UniqueCount());
+		poolSizes.clear(); // Note(Jorben): For some reason without this line there is a VK_SAMPLER or something in the list.
+
+		for (auto& type : m_UniformLayout.UniqueTypes())
+		{
+			VkDescriptorPoolSize poolSize = {};
+			poolSize.type = UniformDataTypeToVulkanDescriptorType(type);
+			poolSize.descriptorCount = m_UniformLayout.AmountOf(type) * BL_MAX_FRAMES_IN_FLIGHT;
+
+			poolSizes.push_back(poolSize);
+		}
+
+		VkDescriptorPoolCreateInfo poolInfo = {};
+		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+		poolInfo.pPoolSizes = poolSizes.data();
+		poolInfo.maxSets = static_cast<uint32_t>(BL_MAX_FRAMES_IN_FLIGHT); // Amount of sets?
+
+		// TODO(Jorben): Add support for multiple pools
+		m_DescriptorPools.resize((size_t)1);
+		if (vkCreateDescriptorPool(VulkanManager::GetDeviceInfo().Device, &poolInfo, nullptr, m_DescriptorPools.data()) != VK_SUCCESS)
+			BL_LOG_ERROR("Failed to create descriptor pool!");
 	}
 
 	void VulkanRenderController::CreateDescriptorSets()
 	{
-		// TODO(Jorben): Implement
+		// TODO(Jorben): Add support for multiple sets (remove hardcoded [0])
+		std::vector<VkDescriptorSetLayout> layouts(BL_MAX_FRAMES_IN_FLIGHT, m_DescriptorLayouts[0]);
+
+		VkDescriptorSetAllocateInfo allocInfo = {};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = m_DescriptorPools[0];
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(BL_MAX_FRAMES_IN_FLIGHT);
+		allocInfo.pSetLayouts = layouts.data();
+
+		m_DescriptorSets.resize((size_t)1);
+		m_DescriptorSets[0].resize((size_t)BL_MAX_FRAMES_IN_FLIGHT);
+		if (vkAllocateDescriptorSets(VulkanManager::GetDeviceInfo().Device, &allocInfo, m_DescriptorSets[0].data()) != VK_SUCCESS)
+			BL_LOG_ERROR("Failed to allocate descriptor sets!");
 	}
 
 	VkVertexInputBindingDescription VulkanRenderController::GetBindingDescription()
@@ -248,4 +349,27 @@ namespace Blossom
 
 		return VK_FORMAT_UNDEFINED;
 	}
+
+	static VkDescriptorType UniformDataTypeToVulkanDescriptorType(UniformDataType type)
+	{
+		switch (type)
+		{
+		case UniformDataType::UBO: return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		// TODO(Jorben): Implement the rest
+		}
+
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+	}
+
+	static VkShaderStageFlags UniformStageFlagsToVulkanStageFlags(ShaderStageEnum flags)
+	{
+		VkShaderStageFlags result = 0;
+		if (flags & UniformElement_Stage_Vertex)
+			result |= VK_SHADER_STAGE_VERTEX_BIT;
+		if (flags & UniformElement_Stage_Fragment)
+			result |= VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		return result;
+	}
+
 }

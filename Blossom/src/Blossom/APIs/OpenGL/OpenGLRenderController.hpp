@@ -15,6 +15,7 @@ namespace Blossom
 
 		void SetShader(std::shared_ptr<Shader>& shader) override;
 		void SetBufferLayout(BufferLayout& layout) override;
+		void SetUniformLayout(UniformLayout& layout) override;
 
 		void Initialize() override;
 
