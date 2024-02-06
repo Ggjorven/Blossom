@@ -99,7 +99,7 @@ project "Blossom"
 	filter "configurations:Dist"
 		defines "BL_DIST"
 		runtime "Release"
-		optimize "on"
+		optimize "full"
 
 	filter { "system:windows", "configurations:Debug" }
 		links

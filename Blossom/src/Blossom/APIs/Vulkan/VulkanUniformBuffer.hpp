@@ -23,7 +23,7 @@ namespace Blossom
 
 	private:
 		std::shared_ptr<RenderController>& m_RenderController;
-		UniformElement& m_Element;
+		UniformElement& m_Element; // Note(Jorben): This becomes an invalid reference after setup // TODO(Jorben): Don't keep the reference
 		size_t m_Size = 0;
 
 		std::array<VkBuffer, BL_MAX_FRAMES_IN_FLIGHT> m_Buffers = { };

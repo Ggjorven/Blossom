@@ -6,6 +6,7 @@
 #include "Blossom/Renderer/Renderer.hpp"
 
 #include "Blossom/APIs/Vulkan/VulkanUniformBuffer.hpp"
+#include "Blossom/APIs/OpenGL/OpenGLUniformBuffer.hpp"
 
 namespace Blossom
 {
@@ -15,9 +16,9 @@ namespace Blossom
 		switch (Renderer::GetAPI())
 		{
 		case RenderingAPI::OpenGL:
-			return nullptr; // TODO(Jorben): Implement
+			return std::make_shared<OpenGLUniformBuffer>(controller, element, dataSize);
 		case RenderingAPI::Vulkan:
-			return std::make_shared<VulkanUniformBuffer>(controller, element, dataSize); // TODO(Jorben): Implement
+			return std::make_shared<VulkanUniformBuffer>(controller, element, dataSize);
 
 		default:
 			BL_LOG_ERROR("Unknown Renderer::API selected.");

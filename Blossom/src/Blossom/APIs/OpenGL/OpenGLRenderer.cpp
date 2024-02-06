@@ -6,6 +6,8 @@
 #include "Blossom/Renderer/VertexBuffer.hpp"
 #include "Blossom/Renderer/IndexBuffer.hpp"
 
+#include "Blossom/Utils/Profiler.hpp"
+
 namespace Blossom
 {
 
@@ -47,11 +49,14 @@ namespace Blossom
 
 	void OpenGLRenderer::DisplayImpl()
 	{
-		while (!m_RenderFunctions.empty())
 		{
-			auto& func = m_RenderFunctions.front();
-			func();
-			m_RenderFunctions.pop();
+			BL_PROFILE_SCOPE("Display");
+			while (!m_RenderFunctions.empty())
+			{
+				auto& func = m_RenderFunctions.front();
+				func();
+				m_RenderFunctions.pop();
+			}
 		}
 	}
 
