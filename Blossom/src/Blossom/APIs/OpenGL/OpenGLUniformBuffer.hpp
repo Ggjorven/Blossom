@@ -18,8 +18,8 @@ namespace Blossom
 		void Bind();
 
 	private:
-		std::shared_ptr<RenderController>& m_RenderController;
-		uint32_t m_Binding = 0;
+		std::shared_ptr<RenderController> m_RenderController = nullptr;
+		UniformElement m_Element = {};
 		size_t m_Size = 0;
 
 		uint32_t m_RendererID = 0;

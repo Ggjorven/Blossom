@@ -10,10 +10,10 @@ void CustomLayer::OnAttach()
 	Renderer::SetClearColour({ 0.0f, 0.0f, 0.0f, 0.0f });
 
 	float squareVertices[6 * 4] = {
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f
 	};
 
 	uint32_t squareIndices[6] = {
@@ -26,7 +26,7 @@ void CustomLayer::OnAttach()
 	m_VertexBuffer = VertexBuffer::Create((void*)squareVertices, sizeof(squareVertices));
 	BufferLayout layout = {
 		BufferElement(BufferDataType::Float3, 0, "a_Position", false),
-		BufferElement(BufferDataType::Float3, 1, "a_Colour", false)
+		BufferElement(BufferDataType::Float2, 1, "a_TexCoord", false)
 	};
 	m_VertexBuffer->SetLayout(layout);
 
@@ -36,11 +36,13 @@ void CustomLayer::OnAttach()
 
 	// Initialize uniform buffer
 	UniformElement colourElement = UniformElement(UniformDataType::UBO, 0, "u_Colour", UniformElement_Stage_Fragment);
+	UniformElement texElement = UniformElement(UniformDataType::Image, 1, "u_Texture", UniformElement_Stage_Fragment);
 	
-	UniformLayout uniformlayout = { colourElement };
+	UniformLayout uniformlayout = { colourElement, texElement };
 	m_Controller->SetUniformLayout(uniformlayout);
 
 	m_UniformBuffer = UniformBufferObject::Create(m_Controller, colourElement, sizeof(glm::vec4));
+	m_Image = Image::Create(m_Controller, texElement, "assets/images/test.jpg");
 
 	// Note(Jorben): The data can be set from anywhere and doesn't even need to be setup here beforehand
 	glm::vec4 col = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -50,7 +52,9 @@ void CustomLayer::OnAttach()
 	m_Controller->SetShader(shader);
 
 	m_Controller->Initialize();
+
 	m_UniformBuffer->UploadToController();
+	m_Image->UploadToController();
 }
 
 void CustomLayer::OnDetach()
@@ -93,11 +97,10 @@ void CustomLayer::OnImGuiRender()
 	
 	ImGuiIO& io = ImGui::GetIO();
 	static float fps = io.Framerate;
-	if (m_Timer > 1.0f)
-	{
+
+	// TODO(Jorben): Fix?
+	//if ((int)m_Timer % 2 == 0)
 		fps = io.Framerate;
-		m_Timer = 0.0f;
-	}
 
 	ImGui::Text(fmt::format("FPS: {:.0f}", fps).c_str());
 

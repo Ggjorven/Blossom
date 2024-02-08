@@ -28,6 +28,7 @@ namespace Blossom
 		void Initialize() override;
 
 		void AddUBO(std::array<VkBuffer, BL_MAX_FRAMES_IN_FLIGHT>& buffers, size_t size, uint32_t binding = 0, uint32_t count = 1);
+		void AddImage(VkImageView imageView, VkSampler sampler, uint32_t binding = 0, uint32_t count = 1);
 
 		static std::shared_ptr<VulkanRenderController> GetController(std::shared_ptr<RenderController>& renderController);
 

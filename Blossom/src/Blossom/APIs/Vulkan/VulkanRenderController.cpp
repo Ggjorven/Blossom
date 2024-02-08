@@ -94,6 +94,30 @@ namespace Blossom
 		}
 	}
 
+	void VulkanRenderController::AddImage(VkImageView imageView, VkSampler sampler, uint32_t binding, uint32_t count)
+	{
+		// Initialize the descriptor sets/uniforms
+		for (size_t i = 0; i < BL_MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			VkDescriptorImageInfo imageInfo = {};
+			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfo.imageView = imageView;
+			imageInfo.sampler = sampler;
+
+			// TODO(Jorben): Make this be able to use multiple descriptor sets
+			VkWriteDescriptorSet descriptorWrite = {};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_DescriptorSets[0][i];
+			descriptorWrite.dstBinding = binding;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.descriptorCount = count;
+			descriptorWrite.pImageInfo = &imageInfo;
+
+			vkUpdateDescriptorSets(VulkanManager::GetDeviceInfo().Device, 1, &descriptorWrite, 0, nullptr);
+		}
+	}
+
 	std::shared_ptr<VulkanRenderController> VulkanRenderController::GetController(std::shared_ptr<RenderController>& renderController)
 	{
 		std::shared_ptr<VulkanRenderController> vulkanRCPtr = std::dynamic_pointer_cast<VulkanRenderController>(renderController);
@@ -355,6 +379,7 @@ namespace Blossom
 		switch (type)
 		{
 		case UniformDataType::UBO: return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		case UniformDataType::Image: return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		// TODO(Jorben): Implement the rest
 		}
 

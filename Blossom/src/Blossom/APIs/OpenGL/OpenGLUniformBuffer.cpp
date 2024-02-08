@@ -11,7 +11,7 @@ namespace Blossom
 {
 
 	OpenGLUniformBuffer::OpenGLUniformBuffer(std::shared_ptr<RenderController>& renderController, UniformElement& element, size_t dataSize)
-		: m_RenderController(renderController), m_Binding(element.Binding), m_Size(dataSize)
+		: m_RenderController(renderController), m_Element(element), m_Size(dataSize)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
@@ -47,7 +47,7 @@ namespace Blossom
 	void OpenGLUniformBuffer::Bind()
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-		glBindBufferBase(GL_UNIFORM_BUFFER, m_Binding, m_RendererID);
+		glBindBufferBase(GL_UNIFORM_BUFFER, m_Element.Binding, m_RendererID);
 	}
 
 }

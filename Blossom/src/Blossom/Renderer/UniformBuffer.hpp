@@ -55,7 +55,6 @@ namespace Blossom
 		std::vector<UniformElement> m_Elements = { };
 	};
 
-	// TODO(Jorben): Add image support?
 	class UniformBufferObject
 	{
 	public:
