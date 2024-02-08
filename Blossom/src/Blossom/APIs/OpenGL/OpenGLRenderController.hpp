@@ -3,6 +3,7 @@
 #include "Blossom/Renderer/RenderController.hpp"
 
 #include "Blossom/APIs/OpenGL/OpenGLUniformBuffer.hpp"
+#include "Blossom/APIs/OpenGL/OpenGLImage.hpp"
 
 namespace Blossom
 {
@@ -23,12 +24,15 @@ namespace Blossom
 
 		// TODO(Jorben): Add a way to remove UBO's?
 		void AddUBO(OpenGLUniformBuffer* buffer);
+		void AddImage(OpenGLImage* image);
 
 		static std::shared_ptr<OpenGLRenderController> GetController(std::shared_ptr<RenderController>& renderController);
 
 	private:
 		std::shared_ptr<Shader> m_Shader = nullptr;
+
 		std::vector<OpenGLUniformBuffer*> m_UBOs = { };
+		std::vector<OpenGLImage*> m_Images = { };
 	};
 
 }

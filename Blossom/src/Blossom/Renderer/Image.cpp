@@ -9,6 +9,7 @@
 #include "Blossom/Renderer/UniformBuffer.hpp"
 
 #include "Blossom/APIs/Vulkan/VulkanImage.hpp"
+#include "Blossom/APIs/OpenGL/OpenGLImage.hpp"
 
 namespace Blossom
 {
@@ -18,7 +19,7 @@ namespace Blossom
 		switch (Renderer::GetAPI())
 		{
 		case RenderingAPI::OpenGL:
-			return nullptr;
+			return std::make_shared<OpenGLImage>(controller, element, width, height);
 		case RenderingAPI::Vulkan:
 			return std::make_shared<VulkanImage>(controller, element, width, height);
 
@@ -35,7 +36,7 @@ namespace Blossom
 		switch (Renderer::GetAPI())
 		{
 		case RenderingAPI::OpenGL:
-			return nullptr;
+			return std::make_shared<OpenGLImage>(controller, element, path);
 		case RenderingAPI::Vulkan:
 			return std::make_shared<VulkanImage>(controller, element, path);
 
