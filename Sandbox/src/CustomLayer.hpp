@@ -7,6 +7,7 @@
 #include <Blossom/Renderer/UniformBuffer.hpp>
 #include <Blossom/Renderer/Image.hpp>
 #include <Blossom/Renderer/Shader.hpp>
+#include <Blossom/Utils/Mesh.hpp>
 
 using namespace Blossom;
 
@@ -23,10 +24,9 @@ public:
 	void OnEvent(Event& e);
 
 private:
-	std::shared_ptr<VertexBuffer> m_VertexBuffer = nullptr;
-	std::shared_ptr<IndexBuffer> m_IndexBuffer = nullptr;
+	Mesh m_Mesh = {};
 
-	std::shared_ptr<UniformBufferObject> m_UniformBuffer = nullptr;
+	std::shared_ptr<UniformBufferObject> m_CameraBuffer = nullptr;
 	std::shared_ptr<Image> m_Image = nullptr;
 
 	std::shared_ptr<RenderController> m_Controller = nullptr;

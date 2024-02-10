@@ -17,7 +17,7 @@ namespace Blossom
 		void Bind() const override;
 		void UnBind() const override;
 
-		const BufferLayout& GetLayout() const override { return m_Layout; }
+		BufferLayout& GetLayout() override { return m_Layout; }
 		void SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
 
 	private:

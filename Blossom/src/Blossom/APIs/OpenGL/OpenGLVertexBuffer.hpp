@@ -17,7 +17,7 @@ namespace Blossom
 
 		void SetSubData(uint32_t offset, void* data, size_t size);
 
-		const BufferLayout& GetLayout() const override { return m_Layout; }
+		BufferLayout& GetLayout() override { return m_Layout; }
 		void SetLayout(const BufferLayout& layout) override;
 
 	private:

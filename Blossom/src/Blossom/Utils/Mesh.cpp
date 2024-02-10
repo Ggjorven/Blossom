@@ -3,6 +3,8 @@
 
 #include "Blossom/Core/Logging.hpp"
 
+#include "Blossom/Renderer/Renderer.hpp"
+
 namespace Blossom
 {
 
@@ -20,7 +22,7 @@ namespace Blossom
 		};
 		m_VertexBuffer->SetLayout(layout);
 
-		m_IndexBuffer = IndexBuffer::Create(indices.data(), sizeof(indices));
+		m_IndexBuffer = IndexBuffer::Create(indices.data(), (uint32_t)indices.size());
 	}
 
 	Mesh::~Mesh()
@@ -30,7 +32,11 @@ namespace Blossom
 	void Mesh::LoadModel(const std::filesystem::path& path, std::vector<MeshVertex>& vertices, std::vector<uint32_t>& indices)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path.string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+		int flags = aiProcess_Triangulate | aiProcess_CalcTangentSpace;
+		if (Renderer::GetAPI() == RenderingAPI::Vulkan) flags |= aiProcess_FlipUVs;
+
+		const aiScene* scene = importer.ReadFile(path.string(), flags);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
