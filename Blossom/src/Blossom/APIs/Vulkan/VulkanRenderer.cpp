@@ -3,9 +3,15 @@
 
 #include "Blossom/Core/Logging.hpp"
 
+#include <vulkan/vulkan.h>
+
+#include "Blossom/Renderer/IndexBuffer.hpp"
+
 #include "Blossom/APIs/Vulkan/VulkanContext.hpp"
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
 #include "Blossom/APIs/Vulkan/Setup/VulkanResources.hpp"
+
+#include "Blossom/Utils/Profiler.hpp"
 
 namespace Blossom
 {
@@ -29,8 +35,16 @@ namespace Blossom
 		s_Instance = nullptr;
 	}
 
+	void VulkanRenderer::WaitImpl()
+	{
+		VulkanDeviceInfo& info = VulkanManager::GetDeviceInfo();
+
+		vkDeviceWaitIdle(info.Device);
+	}
+
 	void VulkanRenderer::ClearImpl()
 	{
+		BL_PROFILE_SCOPE("Clear");
 		// Note(Jorben): This function is kinda redundant for vulkan so it is empty
 	}
 
@@ -39,8 +53,13 @@ namespace Blossom
 		Renderer::GetAPISpecs().ClearColour = colour;
 	}
 
-	void VulkanRenderer::UseControllerImpl(const RenderController& controller)
+	void VulkanRenderer::DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer)
 	{
+		BL_PROFILE_SCOPE("DrawIndexed");
+
+		auto& resourceInfo = VulkanManager::GetResourceInfo();
+
+		vkCmdDrawIndexed(resourceInfo.CommandBuffers[VulkanRenderer::GetCurrentFrame()], indexBuffer->GetCount(), 1, 0, 0, 0);
 	}
 
 	void VulkanRenderer::OnResizeImpl(uint32_t width, uint32_t height)
@@ -50,16 +69,19 @@ namespace Blossom
 
 	void VulkanRenderer::AddToQueueImpl(RenderFunction function)
 	{
+		BL_PROFILE_SCOPE("AddToRenderQueue");
 		m_RenderQueue.push(function);
 	}
 
 	void VulkanRenderer::AddToUIQueueImpl(UIFunction function)
 	{
+		BL_PROFILE_SCOPE("AddToUIQueue");
 		m_UIQueue.push(function);
 	}
 
 	void VulkanRenderer::DisplayImpl()
 	{
+		BL_PROFILE_SCOPE("Display");
 		QueuePresent();
 	}
 
@@ -69,12 +91,18 @@ namespace Blossom
 		auto& swapchainInfo = VulkanManager::GetSwapChainInfo();
 		auto& resourceInfo = VulkanManager::GetResourceInfo();
 
-		// Note(Jorben): Maybe getting the reference to the resourceinfo doesn't work // TODO ... check this
-		vkWaitForFences(deviceInfo.Device, 1, &resourceInfo.InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
+		{
+			BL_PROFILE_SCOPE("WaitForFences");
+			vkWaitForFences(deviceInfo.Device, 1, &resourceInfo.InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
+		}
 
 		uint32_t imageIndex;
 
-		VkResult result = vkAcquireNextImageKHR(deviceInfo.Device, swapchainInfo.SwapChain, UINT64_MAX, resourceInfo.ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+		VkResult result;
+		{
+			BL_PROFILE_SCOPE("AquireImage");
+			result = vkAcquireNextImageKHR(deviceInfo.Device, swapchainInfo.SwapChain, UINT64_MAX, resourceInfo.ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+		}
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			VulkanManager::RecreateSwapChain();
@@ -107,8 +135,11 @@ namespace Blossom
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		if (vkQueueSubmit(deviceInfo.GraphicsQueue, 1, &submitInfo, resourceInfo.InFlightFences[m_CurrentFrame]) != VK_SUCCESS)
-			BL_LOG_ERROR("Failed to submit draw command buffer!");
+		{
+			BL_PROFILE_SCOPE("SubmitCommandBuffer");
+			if (vkQueueSubmit(deviceInfo.GraphicsQueue, 1, &submitInfo, resourceInfo.InFlightFences[m_CurrentFrame]) != VK_SUCCESS)
+				BL_LOG_ERROR("Failed to submit draw command buffer!");
+		}
 
 		VkPresentInfoKHR presentInfo = {};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -122,7 +153,10 @@ namespace Blossom
 		presentInfo.pResults = nullptr; // Optional
 
 		// Check for the result on present again
-		result = vkQueuePresentKHR(deviceInfo.PresentQueue, &presentInfo);
+		{
+			BL_PROFILE_SCOPE("QueuePresent");
+			result = vkQueuePresentKHR(deviceInfo.PresentQueue, &presentInfo);
+		}
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 			VulkanManager::RecreateSwapChain();
@@ -130,18 +164,23 @@ namespace Blossom
 			BL_LOG_ERROR("Failed to present swap chain image!");
 
 		// Note(Jorben): We use the & operator since MAX_FRAMES_IN_FLIGHT is a power of 2 and this is a lot cheaper, if it's not use the % operator
-		m_CurrentFrame = (m_CurrentFrame + 1) & BL_MAX_FRAMES_IN_FLIGHT;
+		m_CurrentFrame = (m_CurrentFrame + 1) % BL_MAX_FRAMES_IN_FLIGHT;
 	}
 
 	void VulkanRenderer::RecordCommandBuffer(VkCommandBuffer& commandBuffer, uint32_t imageIndex)
 	{
+		BL_PROFILE_SCOPE("RecordCommandBuffer");
+
 		VulkanSwapChainInfo& swapchainInfo = VulkanManager::GetSwapChainInfo();
 
 		VkCommandBufferBeginInfo beginInfo = {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-			BL_LOG_ERROR("Failed to begin recording command buffer!");
+		{
+			BL_PROFILE_SCOPE("BeginCmdBuf");
+			if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
+				BL_LOG_ERROR("Failed to begin recording command buffer!");
+		}
 
 		//
 		// TODO(Jorben): Create a custom way to start a render pass
@@ -170,7 +209,10 @@ namespace Blossom
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassInfo.pClearValues = clearValues.data();
 
-		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		{
+			BL_PROFILE_SCOPE("BeginRenderPass");
+			vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		}
 
 		VkViewport viewport = {};
 		viewport.x = 0.0f;
@@ -200,10 +242,16 @@ namespace Blossom
 			m_UIQueue.pop();
 		}
 
-		vkCmdEndRenderPass(commandBuffer);
-
-		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+		{
+			BL_PROFILE_SCOPE("EndRenderPass");
+			vkCmdEndRenderPass(commandBuffer);
+		}
+		
+		{
+			BL_PROFILE_SCOPE("EndCmdBuf");
+			if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
 			BL_LOG_ERROR("Failed to record command buffer!");
+		}
 	}
 
 }

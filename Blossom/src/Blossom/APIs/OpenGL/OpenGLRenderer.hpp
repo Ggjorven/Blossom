@@ -14,12 +14,14 @@ namespace Blossom
 		virtual ~OpenGLRenderer() = default;
 
 	private:
+		void WaitImpl() override;
+
 		void ClearImpl() override;
 		void SetClearColourImpl(const glm::vec4& colour) override;
 
-		void UseControllerImpl(const RenderController& controller) override;
+		void DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer) override;
 
-		void OnResizeImpl(uint32_t width, uint32_t height) override {}
+		void OnResizeImpl(uint32_t width, uint32_t height) override;
 
 		void AddToQueueImpl(RenderFunction function) override;
 		void AddToUIQueueImpl(UIFunction function) override;

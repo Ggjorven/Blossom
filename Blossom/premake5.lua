@@ -41,6 +41,7 @@ project "Blossom"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
+		"%{IncludeDir.tracy}",
 		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.VMA}"
 	}
@@ -53,6 +54,7 @@ project "Blossom"
 		"GLEW",
 		"GLFW",
 		"ImGui",
+		"Tracy",
 		"VMA"
 	}
 
@@ -75,16 +77,29 @@ project "Blossom"
 		defines "BL_DEBUG"
 		runtime "Debug"
 		symbols "on"
+		editandcontinue "Off"
+
+		defines
+		{
+			"TRACY_ENABLE",
+			"NOMINMAX"
+		}
 
 	filter "configurations:Release"
 		defines "BL_RELEASE"
 		runtime "Release"
 		optimize "on"
 
+		defines 
+		{
+			"TRACY_ENABLE",
+			"NOMINMAX"
+		}
+
 	filter "configurations:Dist"
 		defines "BL_DIST"
 		runtime "Release"
-		optimize "on"
+		optimize "full"
 
 	filter { "system:windows", "configurations:Debug" }
 		links

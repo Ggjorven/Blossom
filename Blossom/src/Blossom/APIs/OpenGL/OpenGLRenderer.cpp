@@ -3,8 +3,18 @@
 
 #include <GL/glew.h>
 
+#include "Blossom/Renderer/VertexBuffer.hpp"
+#include "Blossom/Renderer/IndexBuffer.hpp"
+
+#include "Blossom/Utils/Profiler.hpp"
+
 namespace Blossom
 {
+
+	void OpenGLRenderer::WaitImpl()
+	{
+		// Note(Jorben): This function is irrevelant for OpenGL
+	}
 
 	void OpenGLRenderer::ClearImpl()
 	{
@@ -17,8 +27,14 @@ namespace Blossom
 		Renderer::GetAPISpecs().ClearColour = colour;
 	}
 
-	void OpenGLRenderer::UseControllerImpl(const RenderController& controller)
+	void OpenGLRenderer::DrawIndexedImpl(std::shared_ptr<IndexBuffer>& indexBuffer)
 	{
+		glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void OpenGLRenderer::OnResizeImpl(uint32_t width, uint32_t height)
+	{
+		glViewport(0, 0, width, height);
 	}
 
 	void OpenGLRenderer::AddToQueueImpl(RenderFunction function)
@@ -33,11 +49,14 @@ namespace Blossom
 
 	void OpenGLRenderer::DisplayImpl()
 	{
-		while (!m_RenderFunctions.empty())
 		{
-			auto& func = m_RenderFunctions.front();
-			func();
-			m_RenderFunctions.pop();
+			BL_PROFILE_SCOPE("Display");
+			while (!m_RenderFunctions.empty())
+			{
+				auto& func = m_RenderFunctions.front();
+				func();
+				m_RenderFunctions.pop();
+			}
 		}
 	}
 

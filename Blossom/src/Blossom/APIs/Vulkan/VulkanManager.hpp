@@ -5,6 +5,9 @@
 
 #include <vulkan/vulkan.h>
 
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyVulkan.hpp"
+
 namespace Blossom
 {
 

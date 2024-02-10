@@ -6,6 +6,7 @@
 #include "Blossom/Core/Logging.hpp"
 
 #include "Blossom/APIs/Vulkan/VulkanManager.hpp"
+#include "Blossom/APIs/Vulkan/Setup/VulkanBufferHelper.hpp"
 
 namespace Blossom
 {
@@ -30,10 +31,14 @@ namespace Blossom
 
 		m_Resources = new VulkanResources();
 		VulkanManager::PopulateResourceInfo();
+
+		VulkanBufferHelper::Init();
 	}
 
 	void VulkanContext::Destroy()
 	{
+		VulkanBufferHelper::Destroy();
+
 		delete m_SwapChain;
 		delete m_Resources;
 		delete m_Instance;

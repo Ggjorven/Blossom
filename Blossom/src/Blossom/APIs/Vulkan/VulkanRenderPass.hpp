@@ -44,6 +44,7 @@ namespace Blossom
 		void RecreateFrameBuffers();
 
 		bool HasDepth() const { return m_Attachments & DepthAttachment; }
+		VkRenderPass& GetVkRenderPass() { return m_RenderPass; }
 
 	private:
 		void CreateRenderPass(const glm::vec2& extent, ColourSpace colourSpace, Attachments attachments);

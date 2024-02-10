@@ -6,6 +6,8 @@
 
 #include "Blossom/Renderer/Renderer.hpp"
 
+#include "Blossom/Utils/Profiler.hpp"
+
 namespace Blossom
 {
 
@@ -27,11 +29,14 @@ namespace Blossom
 
 	void WindowsWindow::OnUpdate()
 	{
+		BL_PROFILE_SCOPE("PollEvents");
 		glfwPollEvents();
 	}
 
 	void WindowsWindow::OnRender()
 	{
+		FrameMark;
+		BL_PROFILE_SCOPE("SwapBuffers");
 		m_GraphicsContext->SwapBuffers();
 	}
 
@@ -189,9 +194,9 @@ namespace Blossom
 		switch (Renderer::GetAPI())
 		{
 		case RenderingAPI::OpenGL:
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // TODO(Jorben): Change back to CORE profile
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 			break;
 		case RenderingAPI::Vulkan:
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

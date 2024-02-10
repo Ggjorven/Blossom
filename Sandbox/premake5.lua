@@ -15,12 +15,17 @@ project "Sandbox"
 	{
 		"src/**.h",
 		"src/**.hpp",
-		"src/**.cpp"
+		"src/**.cpp",
+
+		"vendor/**.h",
+		"vendor/**.hpp",
+		"vendor/**.cpp"
 	}
 
 	includedirs
 	{
 		"src",
+		"vendor",
 
 		"%{wks.location}/Blossom/src",
 		"%{wks.location}vendor",
@@ -32,6 +37,7 @@ project "Sandbox"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
+		"%{IncludeDir.tracy}",
 		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.VMA}"
 	}
@@ -53,24 +59,25 @@ project "Sandbox"
 
 		defines
 		{
-			"GL_PLATFORM_WINDOWS",
-			"GLFW_INCLUDE_NONE"
+			"BL_PLATFORM_WINDOWS",
+			"GLFW_INCLUDE_NONE",
+			"TRACY_ENABLE"
 		}
 
 	filter "configurations:Debug"
-		defines "GL_DEBUG"
+		defines "BL_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "GL_RELEASE"
+		defines "BL_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "GL_DIST"
+		defines "BL_DIST"
 		runtime "Release"
-		optimize "on"
+		optimize "full"
 
 	filter { "system:windows", "configurations:Debug" }
 		postbuildcommands
